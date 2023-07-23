@@ -1,95 +1,130 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+// move to /app/repl/page.js and create a different home page
+"use client";
+import React, { useState, useEffect} from "react";
+import {
+  Button,
+  Center,
+  ChakraProvider,
+  Divider,
+  Heading,
+  HStack,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  VStack,
+  Textarea,
+} from "@chakra-ui/react";
 
-export default function Home() {
+import ControlledEditor from "@monaco-editor/react";
+import {compile }from "./compiler/judge";
+
+const languages = {
+  "python" : 71,
+  "cpp": 54,
+  "java": 62,
+  "javascript": 63,
+  "csharp": 51
+};
+
+const Compiler = () => {
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("Output :");
+  const [language, setLanguage] = useState("python");
+  const [languageId, setLanguageId] = useState(71);
+  const [theme, setTheme] = useState("vs-light");
+
+  useEffect(() => {
+    // Import the Monaco Editor and other browser-specific dependencies here
+    import("monaco-editor/esm/vs/editor/editor.api");
+    import("monaco-editor/esm/vs/basic-languages/python/python.contribution");
+    import("monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution");
+    import("monaco-editor/esm/vs/basic-languages/java/java.contribution");
+    import("monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution");
+    import("monaco-editor/esm/vs/basic-languages/csharp/csharp.contribution");
+  }, []);
+
+  const handleInput = (value) => {
+    setInput(value);
+  };
+
+  const handleLanguageChange = (language) => {
+    setLanguage(language);
+    setLanguageId(languages[language]);
+  };
+
+  const handleThemeChange = () => {
+    setTheme(() => {
+      return theme === 'vs-light' ? 'vs-dark' : 'vs-light';
+    });
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const result = await compile(input, languageId);
+    setOutput(result);
+  };
+  
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <ChakraProvider>
+      <Center h={"100vh"}>
+        <VStack
+          boxShadow={"md"}
+          p={4}
+          borderStyle={"solid"}
+          borderWidth={1}
+          rounded={"lg"}
+        >
+          <HStack w={"100%"} justify={"space-between"}>
+            <Heading>Code Editor</Heading>
+            <HStack>
+              <Button onClick={() => handleThemeChange(theme)}>Switch Theme</Button>
+              <Menu>
+                <MenuButton as={Button}>{language}</MenuButton>
+                <MenuList>
+                  {Object.keys(languages).map((lang) => (
+                    <MenuItem
+                      key={lang}
+                      onClick={() => handleLanguageChange(lang)}
+                    >
+                      {lang}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+              <Button onClick={handleSubmit}>
+                <i className='fas fa-cog fa-fw'></i> Run
+              </Button>
+            </HStack>
+          </HStack>
+
+          <Divider />
+          
+          <ControlledEditor
+              language={language}
+              value={input}
+              options={{
+                automaticLayout: true,
+                theme: theme,
+              }}
+              onChange={(value) => handleInput(value)}
+              width="800px"
+              height="500px"
             />
-          </a>
-        </div>
-      </div>
+          
+          <Textarea
+            id='output'
+            value={output}
+            readOnly
+            minWidth={"800px"}
+            minHeight={"150px"}
+            backgroundColor={'black'}
+            color={"white"}
+          />
+        </VStack>
+      </Center>
+    </ChakraProvider>
+  );
+};
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default Compiler;
