@@ -1,10 +1,13 @@
-// Needs to be moved to server side to hide api key in production.
+// Needs to be moved to server side to hide api key in production. needs more error handling
 
 import { createSubmission } from "./judgeServerSubmission";
+const TIMEOUT_MS = 10000;
+
 const compile = async (input, languageId) => {
   try {
     const jsonResponse = await createSubmission(input, languageId);
     let jsonGetSolution;
+    const startTime = Date.now();
 
     while (
       jsonGetSolution?.status?.description !== "Accepted" &&
@@ -23,6 +26,9 @@ const compile = async (input, languageId) => {
           }
         );
         jsonGetSolution = await getSolution.json();
+      }
+      if(Date.Now - startTime > TIMEOUT_MS) {
+        return `Server Timed Out Retrieving response You can access your result with this token: ${jsonResponse?.token}`
       }
     }
 

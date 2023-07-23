@@ -1,4 +1,4 @@
-// runs on server only working on moving the rest of judge.js
+// runs on server only working on moving the rest of judge.js needs error handling
 "use server";
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 export async function createSubmission(input, languageId) {
@@ -15,6 +15,7 @@ export async function createSubmission(input, languageId) {
       language_id: languageId,
     }),
   });
+
 
   const submissionResponse = await response.json();
   return submissionResponse;
