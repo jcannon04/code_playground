@@ -6,6 +6,7 @@ const TIMEOUT_MS = 10000;
 const compile = async (input, languageId) => {
   try {
     const jsonResponse = await createSubmission(input, languageId);
+
     let jsonGetSolution;
     const startTime = Date.now();
 
@@ -16,19 +17,17 @@ const compile = async (input, languageId) => {
     ) {
       if (jsonResponse?.token) {
         const getSolution = await fetch(
-          `https://judge0-ce.p.rapidapi.com/submissions/${jsonResponse.token}?base64_encoded=true`,
+          `http://localhost:2358/submissions/${jsonResponse.token}?base64_encoded=true`,
           {
             headers: {
-              "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-              "x-rapidapi-key": "Your API Key Here",
               "content-type": "application/json",
             },
           }
         );
         jsonGetSolution = await getSolution.json();
       }
-      if(Date.Now - startTime > TIMEOUT_MS) {
-        return `Server Timed Out Retrieving response You can access your result with this token: ${jsonResponse?.token}`
+      if (Date.Now - startTime > TIMEOUT_MS) {
+        return `Server Timed Out Retrieving response You can access your result with this token: ${jsonResponse?.token}`;
       }
     }
 

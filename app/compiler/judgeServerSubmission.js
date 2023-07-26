@@ -2,11 +2,9 @@
 "use server";
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 export async function createSubmission(input, languageId) {
-  const response = await fetch("https://judge0-ce.p.rapidapi.com/submissions", {
+  const response = await fetch("http://localhost:2358/submissions/", {
     method: "POST",
     headers: {
-      "x-rapidapi-host": "judge0-ce.p.rapidapi.com",
-      "x-rapidapi-key": RAPIDAPI_KEY, // Replace this with your RapidAPI key
       "content-type": "application/json",
       accept: "application/json",
     },
@@ -16,8 +14,6 @@ export async function createSubmission(input, languageId) {
     }),
   });
 
-
   const submissionResponse = await response.json();
   return submissionResponse;
 }
-

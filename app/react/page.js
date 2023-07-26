@@ -2,16 +2,46 @@
 
 import React, { useState, useEffect } from "react";
 import { emmetHTML } from "emmet-monaco-es";
-
+import { generateAnswer } from "../ai/webDevHelper";
 import files from "../files/react";
 import reactIframeBoiler from "../iframes/reactBoilerPlate";
 import WebEditor from "../components/WebEditor";
 import FileManager from "../components/FileManager";
 
+const buttonStyles = {
+  fontFamily: "monospace",
+  backgroundColor: "rgb(31, 31, 31)",
+  color: "rgb(15, 228, 15)",
+  borderRadius: "4px",
+  padding: "10px 20px",
+  cursor: "pointer",
+  marginBottom: "2px",
+  transition: "background-color 0.2s",
+};
+
+const textAreaStyles = {
+  width: "100%",
+  padding: "8px",
+  borderRadius: "4px",
+  border: "1px solid #ccc",
+  resize: "none",
+  marginBottom: "8px",
+};
+
 function WebPlayground() {
   const [fileName, setFileName] = useState("index.html");
+  const [studentQuestion, setStudentQuestion] = useState("");
+  const [isAskingChat, setIsAskingChat] = useState(false);
   const disposeEmmetHTMLRef = React.useRef();
   const file = files[fileName];
+
+  useEffect(() => {
+    return () => {
+      if (disposeEmmetHTMLRef.current) {
+        disposeEmmetHTMLRef.current();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     // Import the Monaco Editor and other browser-specific dependencies here
@@ -20,13 +50,13 @@ function WebPlayground() {
       "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution"
     );
     import("monaco-editor/esm/vs/basic-languages/css/css.contribution");
-    disposeEmmetHTMLRef.current ? disposeEmmetHTMLRef.current() : null;
     updatePreview();
   }, [fileName]);
 
   const handleEditorWillMount = (monaco) => {
     disposeEmmetHTMLRef.current = emmetHTML(monaco);
   };
+
   const handleFileChange = (fileName) => {
     setFileName(fileName);
   };
@@ -61,6 +91,28 @@ function WebPlayground() {
   const handleRunClick = () => {
     updatePreview();
   };
+  const handleAskChat = () => {
+    setIsAskingChat(true);
+  };
+
+  const handleSubmitQuestion = async () => {
+    // Handle submitting the student's question to the chat API here
+    // You can use the 'generateAnswer' function to fetch the answer and update the state accordingly
+    // For example:
+    const answer = await generateAnswer({
+      css: files["style.css"].value,
+      javascript: files["script.js"].value,
+      html: files["index.html"].value,
+      studentQuestion,
+    });
+
+    // // Handle the answer here, e.g., you can display it in a modal or log it to the console
+    console.log("Chat Answer:", answer);
+
+    // Reset the state and hide the text area
+    setIsAskingChat(false);
+    setStudentQuestion("");
+  };
 
   const editorOptions = {
     fontSize: 16,
@@ -68,21 +120,42 @@ function WebPlayground() {
 
   return (
     <>
-      <FileManager
-        handleFileChange={handleFileChange}
-        handleRunClick={handleRunClick}
-        fileName={fileName}
-      />
-      <WebEditor
-        height='80vh'
-        theme='vs-dark'
-        path={file.name}
-        defaultLanguage={file.language}
-        defaultValue={file.value}
-        onChange={handleCodeChange}
-        options={editorOptions}
-        beforeMount={handleEditorWillMount}
-      />
+      {!isAskingChat && (
+        <div>
+          <FileManager
+            handleFileChange={handleFileChange}
+            handleRunClick={handleRunClick}
+            fileName={fileName}
+          />
+          <WebEditor
+            height='80vh'
+            theme='vs-dark'
+            path={file.name}
+            defaultLanguage={file.language}
+            defaultValue={file.value}
+            onChange={handleCodeChange}
+            options={editorOptions}
+            beforeMount={handleEditorWillMount}
+          />
+          <button style={buttonStyles} onClick={handleAskChat}>Ask Chat</button>
+        </div>
+      )}
+      {isAskingChat && (
+        <div>
+          <textarea
+            rows='4'
+            cols='50'
+            style={textAreaStyles}
+            value={studentQuestion}
+            onChange={(e) => setStudentQuestion(e.target.value)}
+            placeholder="Ask your question here..."
+          />
+          <br />
+          <button style={buttonStyles} onClick={handleSubmitQuestion}>
+            Submit
+          </button>
+        </div>
+      )}
     </>
   );
 }
