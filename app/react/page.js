@@ -120,7 +120,7 @@ function WebPlayground() {
 
   return (
     <>
-      {!isAskingChat && (
+      {/* {!isAskingChat && ( */}
         <div>
           <FileManager
             handleFileChange={handleFileChange}
@@ -137,10 +137,10 @@ function WebPlayground() {
             options={editorOptions}
             beforeMount={handleEditorWillMount}
           />
-          <button style={buttonStyles} onClick={handleAskChat}>Ask Chat</button>
+          {/* <button style={buttonStyles} onClick={handleAskChat}>Ask Chat</button> */}
         </div>
-      )}
-      {isAskingChat && (
+       {/* )} */}
+      {/* {isAskingChat && (
         <div>
           <textarea
             rows='4'
@@ -155,7 +155,7 @@ function WebPlayground() {
             Submit
           </button>
         </div>
-      )}
+      )} */}
     </>
   );
 }
