@@ -5,6 +5,7 @@ import { emmetHTML } from "emmet-monaco-es";
 import { generateAnswer } from "../ai/webDevHelper";
 import files from "../files/react";
 import reactIframeBoiler from "../iframes/reactBoilerPlate";
+import chatIframeBoiler from "../iframes/chatBoilerPlate";
 import WebEditor from "../components/WebEditor";
 import FileManager from "../components/FileManager";
 
@@ -17,6 +18,7 @@ const buttonStyles = {
   cursor: "pointer",
   marginBottom: "2px",
   transition: "background-color 0.2s",
+  float: "right",
 };
 
 const textAreaStyles = {
@@ -30,8 +32,8 @@ const textAreaStyles = {
 
 function WebPlayground() {
   const [fileName, setFileName] = useState("index.html");
-  const [studentQuestion, setStudentQuestion] = useState("");
-  const [isAskingChat, setIsAskingChat] = useState(false);
+  const [mode, setMode] = useState("preview");
+
   const disposeEmmetHTMLRef = React.useRef();
   const file = files[fileName];
 
@@ -51,7 +53,7 @@ function WebPlayground() {
     );
     import("monaco-editor/esm/vs/basic-languages/css/css.contribution");
     updatePreview();
-  }, [fileName]);
+  }, [fileName, mode]);
 
   const handleEditorWillMount = (monaco) => {
     disposeEmmetHTMLRef.current = emmetHTML(monaco);
@@ -62,13 +64,26 @@ function WebPlayground() {
   };
 
   const updatePreview = () => {
+    let iframeContent;
+    const iframe = document.createElement("iframe");
+    const preview = document.getElementById("preview");
     const javascript = files["script.js"];
     const css = files["style.css"];
     const html = files["index.html"];
-    const iframe = document.createElement("iframe");
-    const preview = document.getElementById("preview");
 
-    const iframeContent = reactIframeBoiler(css, html, javascript);
+    if (mode == "preview") {
+      console.log("preview")
+      iframeContent = reactIframeBoiler(css, html, javascript);
+    }
+
+    if (mode == "chat") {
+      iframeContent = chatIframeBoiler(
+        files["style.css"].value,
+        files["script.js"].value,
+        files["index.html"].value,
+        generateAnswer
+      );
+    }
 
     iframe.srcdoc = iframeContent;
     iframe.style.width = "100%";
@@ -91,27 +106,13 @@ function WebPlayground() {
   const handleRunClick = () => {
     updatePreview();
   };
-  const handleAskChat = () => {
-    setIsAskingChat(true);
+
+  const handleSwitchToPreview = () => {
+    setMode("preview");
   };
 
-  const handleSubmitQuestion = async () => {
-    // Handle submitting the student's question to the chat API here
-    // You can use the 'generateAnswer' function to fetch the answer and update the state accordingly
-    // For example:
-    const answer = await generateAnswer({
-      css: files["style.css"].value,
-      javascript: files["script.js"].value,
-      html: files["index.html"].value,
-      studentQuestion,
-    });
-
-    // // Handle the answer here, e.g., you can display it in a modal or log it to the console
-    console.log("Chat Answer:", answer);
-
-    // Reset the state and hide the text area
-    setIsAskingChat(false);
-    setStudentQuestion("");
+  const handleSwitchToChat = () => {
+    setMode("chat");
   };
 
   const editorOptions = {
@@ -120,42 +121,29 @@ function WebPlayground() {
 
   return (
     <>
-      {!isAskingChat && (
-        <div>
-          <FileManager
-            handleFileChange={handleFileChange}
-            handleRunClick={handleRunClick}
-            fileName={fileName}
-          />
-          <WebEditor
-            height='80vh'
-            theme='vs-dark'
-            path={file.name}
-            defaultLanguage={file.language}
-            defaultValue={file.value}
-            onChange={handleCodeChange}
-            options={editorOptions}
-            beforeMount={handleEditorWillMount}
-          />
-          <button style={buttonStyles} onClick={handleAskChat}>Ask Chat</button>
-        </div>
-      )}
-      {isAskingChat && (
-        <div>
-          <textarea
-            rows='4'
-            cols='50'
-            style={textAreaStyles}
-            value={studentQuestion}
-            onChange={(e) => setStudentQuestion(e.target.value)}
-            placeholder="Ask your question here..."
-          />
-          <br />
-          <button style={buttonStyles} onClick={handleSubmitQuestion}>
-            Submit
-          </button>
-        </div>
-      )}
+      <div>
+        <button style={buttonStyles} onClick={handleSwitchToPreview}>
+          Preview
+        </button>
+        <button style={buttonStyles} onClick={() => handleSwitchToChat()}>
+          Chat
+        </button>
+        <FileManager
+          handleFileChange={handleFileChange}
+          handleRunClick={handleRunClick}
+          fileName={fileName}
+        />
+        <WebEditor
+          height='80vh'
+          theme='vs-dark'
+          path={file.name}
+          defaultLanguage={file.language}
+          defaultValue={file.value}
+          onChange={handleCodeChange}
+          options={editorOptions}
+          beforeMount={handleEditorWillMount}
+        />
+      </div>
     </>
   );
 }
