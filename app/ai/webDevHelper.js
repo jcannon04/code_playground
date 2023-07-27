@@ -30,6 +30,7 @@ export const generateAnswer = async (codeData) => {
         ],
       }),
     });
+    
     const responseData = await response.json();
     const content = responseData.choices[0]?.message?.content;
     return content || "";
