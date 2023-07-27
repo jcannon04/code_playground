@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { emmetHTML } from "emmet-monaco-es";
-import { generateAnswer } from "../ai/webDevHelper";
 import files from "../files/react";
 import reactIframeBoiler from "../iframes/reactBoilerPlate";
 import chatIframeBoiler from "../iframes/chatBoilerPlate";
@@ -19,15 +18,6 @@ const buttonStyles = {
   marginBottom: "2px",
   transition: "background-color 0.2s",
   float: "right",
-};
-
-const textAreaStyles = {
-  width: "100%",
-  padding: "8px",
-  borderRadius: "4px",
-  border: "1px solid #ccc",
-  resize: "none",
-  marginBottom: "8px",
 };
 
 function WebPlayground() {
@@ -81,7 +71,6 @@ function WebPlayground() {
         files["style.css"].value,
         files["script.js"].value,
         files["index.html"].value,
-        generateAnswer
       );
     }
 
