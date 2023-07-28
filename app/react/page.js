@@ -8,6 +8,7 @@ import WebEditor from "../components/WebEditor";
 import FileManager from "../components/FileManager";
 import AskChat from "../components/AskChat";
 import { useCompletion } from "ai/react";
+import Lab from "../components/Lab";
 
 const buttonStyles = {
   fontFamily: "monospace",
@@ -22,6 +23,11 @@ const buttonStyles = {
 };
 
 function WebPlayground() {
+  const [fileName, setFileName] = useState("index.html");
+  const [mode, setMode] = useState("preview");
+  const disposeEmmetHTMLRef = React.useRef();
+  const file = files[fileName];
+
   const { completion, input, handleInputChange, handleSubmit } = useCompletion({
     body: {
       css: files["style.css"].value,
@@ -30,10 +36,6 @@ function WebPlayground() {
     },
   });
 
-  const [fileName, setFileName] = useState("index.html");
-  const [mode, setMode] = useState("preview");
-  const disposeEmmetHTMLRef = React.useRef();
-  const file = files[fileName];
 
   useEffect(() => {
     return () => {
@@ -62,7 +64,7 @@ function WebPlayground() {
   };
 
   const updatePreview = () => {
-    if (mode == "chat") {
+    if (mode !== "preview") {
       return;
     }
 
@@ -72,14 +74,6 @@ function WebPlayground() {
     const css = files["style.css"];
     const html = files["index.html"];
     const iframeContent = reactIframeBoiler(css, html, javascript);
-
-    // if (mode == "chat") {
-    //   iframeContent = chatIframeBoiler(
-    //     files["style.css"].value,
-    //     files["script.js"].value,
-    //     files["index.html"].value
-    //   );
-    // }
 
     iframe.srcdoc = iframeContent;
     iframe.style.width = "100%";
@@ -111,17 +105,24 @@ function WebPlayground() {
     setMode("chat");
   };
 
+  const handleSwitchToLab = () => {
+    setMode("quiz")
+  }
+
   const editorOptions = {
     fontSize: 16,
   };
 
   return (
     <>
-      <button style={buttonStyles} onClick={handleSwitchToPreview}>
+      <button style={mode == "preview" ? {...buttonStyles, opacity: "0.6"} : buttonStyles} onClick={handleSwitchToPreview}>
         Preview
       </button>
-      <button style={buttonStyles} onClick={handleSwitchToChat}>
+      <button style={mode == "chat" ? {...buttonStyles, opacity: "0.6"} : buttonStyles } onClick={handleSwitchToChat}>
         Chat
+      </button>
+      <button style={mode == "quiz" ? {...buttonStyles, opacity: "0.6"} : buttonStyles} onClick={handleSwitchToLab}>
+        Lab
       </button>
       <FileManager
         handleFileChange={handleFileChange}
@@ -152,6 +153,10 @@ function WebPlayground() {
             handleInputChange={handleInputChange}
             completion={completion}
           />
+        )}
+
+        {mode == "quiz" && (
+          <Lab />
         )}
       </div>
     </>

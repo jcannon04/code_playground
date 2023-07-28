@@ -11,6 +11,7 @@ const textAreaStyles = {
   resize: "none",
   marginBottom: "8px",
 };
+
 const buttonStyles = {
   fontFamily: "monospace",
   backgroundColor: "rgb(31, 31, 31)",
@@ -22,6 +23,7 @@ const buttonStyles = {
   transition: "background-color 0.2s",
   float: "right",
 };
+
 const AskChat = ({ completion, input, handleInputChange, handleSubmit }) => {
     const inputRef = useRef(null);
 
