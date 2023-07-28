@@ -4,9 +4,10 @@ import React, { useState, useEffect } from "react";
 import { emmetHTML } from "emmet-monaco-es";
 import files from "../files/react";
 import reactIframeBoiler from "../iframes/reactBoilerPlate";
-import chatIframeBoiler from "../iframes/chatBoilerPlate";
 import WebEditor from "../components/WebEditor";
 import FileManager from "../components/FileManager";
+import AskChat from "../components/AskChat";
+import { useCompletion } from "ai/react";
 
 const buttonStyles = {
   fontFamily: "monospace",
@@ -21,9 +22,16 @@ const buttonStyles = {
 };
 
 function WebPlayground() {
+  const { completion, input, handleInputChange, handleSubmit } = useCompletion({
+    body: {
+      css: files["style.css"].value,
+      html: files["index.html"].value,
+      js: files["script.js"].value,
+    },
+  });
+
   const [fileName, setFileName] = useState("index.html");
   const [mode, setMode] = useState("preview");
-
   const disposeEmmetHTMLRef = React.useRef();
   const file = files[fileName];
 
@@ -54,25 +62,24 @@ function WebPlayground() {
   };
 
   const updatePreview = () => {
-    let iframeContent;
+    if (mode == "chat") {
+      return;
+    }
+
     const iframe = document.createElement("iframe");
     const preview = document.getElementById("preview");
     const javascript = files["script.js"];
     const css = files["style.css"];
     const html = files["index.html"];
+    const iframeContent = reactIframeBoiler(css, html, javascript);
 
-    if (mode == "preview") {
-      console.log("preview")
-      iframeContent = reactIframeBoiler(css, html, javascript);
-    }
-
-    if (mode == "chat") {
-      iframeContent = chatIframeBoiler(
-        files["style.css"].value,
-        files["script.js"].value,
-        files["index.html"].value,
-      );
-    }
+    // if (mode == "chat") {
+    //   iframeContent = chatIframeBoiler(
+    //     files["style.css"].value,
+    //     files["script.js"].value,
+    //     files["index.html"].value
+    //   );
+    // }
 
     iframe.srcdoc = iframeContent;
     iframe.style.width = "100%";
@@ -110,19 +117,18 @@ function WebPlayground() {
 
   return (
     <>
-
-      <div>
-        <button style={buttonStyles} onClick={handleSwitchToPreview}>
-          Preview
-        </button>
-        <button style={buttonStyles} onClick={() => handleSwitchToChat()}>
-          Chat
-        </button>
-        <FileManager
-          handleFileChange={handleFileChange}
-          handleRunClick={handleRunClick}
-          fileName={fileName}
-        />
+      <button style={buttonStyles} onClick={handleSwitchToPreview}>
+        Preview
+      </button>
+      <button style={buttonStyles} onClick={handleSwitchToChat}>
+        Chat
+      </button>
+      <FileManager
+        handleFileChange={handleFileChange}
+        handleRunClick={handleRunClick}
+        fileName={fileName}
+      />
+      <div style={{ display: "flex" }}>
         <WebEditor
           height='80vh'
           theme='vs-dark'
@@ -133,6 +139,20 @@ function WebPlayground() {
           options={editorOptions}
           beforeMount={handleEditorWillMount}
         />
+        {mode == "preview" && (
+          <div
+            id='preview'
+            style={{ flex: 1, height: "80vh", border: "1px solid #ccc" }}
+          ></div>
+        )}
+        {mode == "chat" && (
+          <AskChat
+            handleSubmit={handleSubmit}
+            input={input}
+            handleInputChange={handleInputChange}
+            completion={completion}
+          />
+        )}
       </div>
     </>
   );

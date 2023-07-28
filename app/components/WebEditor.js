@@ -12,7 +12,7 @@ const WebEditor = ({
   beforeMount,
 }) => {
   return (
-    <div style={{ display: "flex" }}>
+    
       <div style={{ flex: 1 }}>
         <ControlledEditor
           height={height}
@@ -25,11 +25,6 @@ const WebEditor = ({
           beforeMount={beforeMount}
         />
       </div>
-      <div
-        id='preview'
-        style={{ flex: 1, height, border: "1px solid #ccc" }}
-      ></div>
-    </div>
   );
 };
 
