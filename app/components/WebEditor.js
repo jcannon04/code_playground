@@ -13,7 +13,7 @@ const WebEditor = ({
 }) => {
   return (
     
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 2 }}>
         <ControlledEditor
           height={height}
           theme={theme}

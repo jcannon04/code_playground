@@ -1,4 +1,4 @@
-const files = {
+const starterFiles = {
     "script.js": {
       name: "script.js",
       language: "javascript",
@@ -51,4 +51,4 @@ ReactDOM.render(<HomePage />, app)
     }, //index.html
 };
 
-export default files;
+export default starterFiles;

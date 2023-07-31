@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { emmetHTML } from "emmet-monaco-es";
-import files from "../files/react";
+import starterFiles from "../files/react";
 import reactIframeBoiler from "../iframes/reactBoilerPlate";
 import WebEditor from "../components/WebEditor";
 import FileManager from "../components/FileManager";
@@ -22,10 +22,21 @@ const buttonStyles = {
   float: "right",
 };
 
+const saveFilesToLocalStorage = (files) => {
+  localStorage.setItem("webPlaygroundFiles", JSON.stringify(files));
+};
+
+const loadFilesFromLocalStorage = () => {
+  const storedFiles = localStorage.getItem("webPlaygroundFiles");
+  return storedFiles ? JSON.parse(storedFiles) : starterFiles;
+};
+
 function WebPlayground() {
   const [fileName, setFileName] = useState("index.html");
   const [mode, setMode] = useState("preview");
-  const disposeEmmetHTMLRef = React.useRef();
+  const [files, setFiles] = useState(starterFiles);
+  const [codeChangedTimeout, setCodeChangedTimeout] = useState(null);
+  const disposeEmmetHTMLRef = useRef();
   const file = files[fileName];
 
   const { completion, input, handleInputChange, handleSubmit } = useCompletion({
@@ -36,7 +47,6 @@ function WebPlayground() {
     },
   });
 
-
   useEffect(() => {
     return () => {
       if (disposeEmmetHTMLRef.current) {
@@ -46,14 +56,25 @@ function WebPlayground() {
   }, []);
 
   useEffect(() => {
+    const loadedFiles = loadFilesFromLocalStorage();
+    setFiles(loadedFiles); // Update files using the loaded data
+  }, []);
+
+  useEffect(() => {
     // Import the Monaco Editor and other browser-specific dependencies here
     import("monaco-editor/esm/vs/basic-languages/html/html.contribution");
     import(
       "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution"
     );
     import("monaco-editor/esm/vs/basic-languages/css/css.contribution");
-    updatePreview();
-  }, [fileName, mode]);
+  
+  }, [fileName]);
+
+  useEffect(() => {
+    if (mode == "preview") {
+      updatePreview();
+    }
+  }, [files, mode])
 
   const handleEditorWillMount = (monaco) => {
     disposeEmmetHTMLRef.current = emmetHTML(monaco);
@@ -64,10 +85,6 @@ function WebPlayground() {
   };
 
   const updatePreview = () => {
-    if (mode !== "preview") {
-      return;
-    }
-
     const iframe = document.createElement("iframe");
     const preview = document.getElementById("preview");
     const javascript = files["script.js"];
@@ -86,13 +103,22 @@ function WebPlayground() {
 
   const handleCodeChange = (value) => {
     const updatedFile = { ...file, value };
-    files[fileName] = updatedFile;
 
-    if (fileName != "script.js") {
-      updatePreview();
+    const updatedFiles = { ...files, [fileName]: updatedFile };
+    
+    if (codeChangedTimeout) {
+      clearTimeout(codeChangedTimeout);
     }
-  };
+    
+    const newTimeout = setTimeout(() => {
+      setFiles(updatedFiles);
+      saveFilesToLocalStorage(updatedFiles);
+    }, 1000);
 
+    setCodeChangedTimeout(newTimeout);
+    
+  };
+  
   const handleRunClick = () => {
     updatePreview();
   };

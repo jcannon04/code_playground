@@ -9,7 +9,6 @@ const textAreaStyles = {
   borderRadius: "4px",
   border: "1px solid #ccc",
   resize: "none",
-  marginBottom: "8px",
 };
 
 const buttonStyles = {
@@ -17,15 +16,15 @@ const buttonStyles = {
   backgroundColor: "rgb(31, 31, 31)",
   color: "rgb(15, 228, 15)",
   borderRadius: "4px",
-  padding: "10px 20px",
+  padding: "11px 20px",
   cursor: "pointer",
-  marginBottom: "2px",
   transition: "background-color 0.2s",
   float: "right",
 };
 
+const chatDisclosure = "ChatGPT may produce inaccurate information about people, places, or facts"
 const AskChat = ({ completion, input, handleInputChange, handleSubmit }) => {
-    const inputRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -34,26 +33,41 @@ const AskChat = ({ completion, input, handleInputChange, handleSubmit }) => {
   return (
     <div
       style={{
+        display: "flex",
         flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-between",
         height: "80vh",
         border: "1px solid #ccc",
         overflow: "auto",
       }}
     >
+      <div style={{
+          margin: "10px",
+          display: "block"
+        }}>
+      <ReactMarkdown>{completion || chatDisclosure}</ReactMarkdown>
+      </div>
       <form onSubmit={handleSubmit}>
-        <ReactMarkdown>{completion}</ReactMarkdown>
-        <div style={{display: "flex", alignItems: "baseline"}}>
-        <input
-          type='text'
-          placeholder='Ask your question here...'
-          style={textAreaStyles}
-          value={input}
-          onChange={handleInputChange}
-          ref={inputRef}
-        />
-        <button style={buttonStyles} type='submit'>
-          Ask
-        </button>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            position: "sticky",
+            top: "0px",
+          }}
+        >
+          <input
+            type='text'
+            placeholder='Ask your question here...'
+            style={textAreaStyles}
+            value={input}
+            onChange={handleInputChange}
+            ref={inputRef}
+          />
+          <button style={buttonStyles} type='submit'>
+            Ask
+          </button>
         </div>
       </form>
     </div>

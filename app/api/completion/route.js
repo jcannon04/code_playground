@@ -77,9 +77,9 @@ function generatePromptFromData(codeData) {
   return testPrompt;
 }
 
-function generateQuiz(codeData) {
+function generateQuiz() {
   return `
-Generate a project or lab assignment for a web development student. The students are allowed to use html, css, javascript, and react. The project should be simple, something a new developer would be able to do on codepen or jsfiddle. The assigment should include A title, a problem domain, and user stories that the student needs to complete it should be in the same format as this example:
+Generate a project or lab assignment for a web development student. The students are allowed to use html, css, javascript, and react. The project should be simple, something a new developer would be able to do on codepen or jsfiddle. The student will not be able to access a database or use external libraries. The assigment should include A title, a problem domain, and user stories that the student needs to complete it should be in the same format as this example:
 Title: Odd Duck Products
 
 Problem Domain:
