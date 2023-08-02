@@ -60,6 +60,7 @@ const Compiler = () => {
       return theme === "vs-light" ? "vs-dark" : "vs-light";
     });
   };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await compile(input, languageId);

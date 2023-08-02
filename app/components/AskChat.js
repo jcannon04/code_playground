@@ -22,7 +22,8 @@ const buttonStyles = {
   float: "right",
 };
 
-const chatDisclosure = "ChatGPT may produce inaccurate information about people, places, or facts"
+const chatDisclosure =
+  "ChatGPT may produce inaccurate information about people, places, or facts";
 const AskChat = ({ completion, input, handleInputChange, handleSubmit }) => {
   const inputRef = useRef(null);
 
@@ -42,11 +43,13 @@ const AskChat = ({ completion, input, handleInputChange, handleSubmit }) => {
         overflow: "auto",
       }}
     >
-      <div style={{
+      <div
+        style={{
           margin: "10px",
-          display: "block"
-        }}>
-      <ReactMarkdown>{completion || chatDisclosure}</ReactMarkdown>
+          display: "block",
+        }}
+      >
+        <ReactMarkdown>{completion || chatDisclosure}</ReactMarkdown>
       </div>
       <form onSubmit={handleSubmit}>
         <div

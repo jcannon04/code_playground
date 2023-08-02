@@ -1,10 +1,4 @@
-import { Configuration, OpenAIApi } from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
-
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
 
 export const runtime = "edge";
 
@@ -18,6 +12,7 @@ export async function POST(req, res) {
     } else {
       prompt = generateQuiz(codeData);
     }
+
     const url = "https://api.openai.com/v1/chat/completions";
     const apiKey = process.env.OPENAI_API_KEY;
     const response = await fetch(url, {

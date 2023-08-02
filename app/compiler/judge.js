@@ -17,7 +17,7 @@ const compile = async (input, languageId) => {
     ) {
       if (jsonResponse?.token) {
         const getSolution = await fetch(
-          `http://localhost:2358/submissions/${jsonResponse.token}?base64_encoded=true`,
+          `http://159.203.136.237:2358/submissions/${jsonResponse.token}?base64_encoded=true`,
           {
             headers: {
               "content-type": "application/json",

@@ -2,7 +2,7 @@
 "use server";
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 export async function createSubmission(input, languageId) {
-  const response = await fetch("http://localhost:2358/submissions/", {
+  const response = await fetch("http://159.203.136.237:2358/submissions/", {
     method: "POST",
     headers: {
       "content-type": "application/json",

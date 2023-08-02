@@ -8,13 +8,16 @@ const buttonStyles = {
   marginBottom: "2px",
   transition: "background-color 0.2s",
 };
+
 const buyMeACoffeeStyles = {
   height: "40px",
   width: "145px",
 };
+
 const buttonDivStyles = {
   display: "flex",
 };
+
 const FileManager = ({ handleFileChange, handleRunClick, fileName }) => {
   return (
     <div style={buttonDivStyles}>
