@@ -3,6 +3,7 @@ const reactIframeBoiler = (css, html, javascript) => {
         `
         <html>
             <head>
+                <meta charset="UTF-8">
                 <style>${css.value}</style>
             </head>
             <body>

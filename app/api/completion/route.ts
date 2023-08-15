@@ -1,16 +1,18 @@
 import { OpenAIStream, StreamingTextResponse } from "ai";
-
+import { NextResponse } from "next/server";
 export const runtime = "edge";
 
 export async function POST(req, res) {
   try {
     const codeData = await req.json();
-    let prompt;
+    let prompt : string;
 
-    if(!codeData.quiz) {
-      prompt = generatePromptFromData(codeData);
-    } else {
+    if(codeData.quiz) {
       prompt = generateQuiz(codeData);
+    } else if(codeData.source) {
+      prompt = generatePromptFromSource(codeData);
+    } else {
+      prompt = generatePromptFromData(codeData);
     }
 
     const url = "https://api.openai.com/v1/chat/completions";
@@ -27,7 +29,7 @@ export async function POST(req, res) {
           {
             role: "system",
             content:
-              "You are a web development instructor for a software engineering bootcamp answer student questions",
+              "You are a software engineering instructor for a software engineering bootcamp",
           },
           { role: "user", content: prompt },
         ],
@@ -37,7 +39,7 @@ export async function POST(req, res) {
     const stream = OpenAIStream(response);
     return new StreamingTextResponse(stream);
   } catch (error) {
-    return Response.json(`Error fetching data: ${error.message}`);
+    return NextResponse.json(`Error fetching data: ${error.message}`);
   }
 }
 
@@ -67,12 +69,20 @@ function generatePromptFromData(codeData) {
 </html>
   `;
 
-  const testPrompt = `code snippet with added instructor code:${codeSnippet}\n ${prompt}\n The only code I wrote the following code\ncss:${css}\njavascript${js}\nhtml:${html} Only supply answer related to the my questions and code. Dont mention errors that might occuring in the code the instructor wrote. The scripts tags containing the react, reactdom, and babel scripts were included by the instructor  so that the I could write react code without using import statements that will be compiled dynamically by babel standalone do not provide answers related to the script tags or missing imports. You can assume that the script tags are being loaded correctly and are up to date. Focus on syntax and logic errors found in my code . Give code examples and suggested solutions when possible`
+  const testPrompt = `code snippet with added instructor code:${codeSnippet}\n ${prompt}\n The only code I wrote the following code\ncss:${css}\njavascript${js}\nhtml:${html} Only supply answer related to the my questions and code. Dont mention errors that might be occuring in the code the instructor wrote. The scripts tags containing the react, reactdom, and babel scripts were included by the instructor so that the I could write react code without using import statements that will be compiled dynamically by babel standalone do not provide answers related to the script tags or missing imports. You can assume that the script tags are being loaded correctly and are up to date. Focus on syntax and logic errors found in my code . Give code examples and suggested solutions when possible`
 
   return testPrompt;
 }
 
-function generateQuiz() {
+function generateQuiz(codeData) {
+  const {source, output, language, prompt} = codeData;
+  if(language == "SQL (SQLite 3.27.2)") {
+    return`create a lab assignment for ${language} using the chinook database the assigment should ask students to generate a single query and should be target to a web development bootcamp. Give a small example of the required output. Don't worry about timeline or details of how to submit the assignment as those details may change or I may want to reuse the lab`
+  }
+  if(language) {
+    return `create a simple lab assignment that could be written in a basic online code repl for the ${language} language. It should be for a first or second year computer science student and the output should be to stdout as it will be ran and compiled with judge0.`
+  }
+
   return `
 Generate a project or lab assignment for a web development student. The students are allowed to use html, css, javascript, and react. The project should be simple, something a new developer would be able to do on codepen or jsfiddle. The student will not be able to access a database or use external libraries. The assigment should include A title, a problem domain, and user stories that the student needs to complete it should be in the same format as this example:
 Title: Odd Duck Products
@@ -96,4 +106,9 @@ Attach an event listener to the section of the HTML page where the images are go
 Once the users ‘clicks’ a product, generate three new products for the user to pick from.
 2. ...
 `;
+}
+
+function generatePromptFromSource(codeData) {
+  const {source, output, language, prompt} = codeData;
+  return `language: ${language}\nmy source code:\n${source}\nthe output:\n${output}\n${prompt}`
 }

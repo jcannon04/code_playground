@@ -2,10 +2,13 @@
 
 import { createSubmission } from "./judgeServerSubmission";
 const TIMEOUT_MS = 10000;
-
-const compile = async (input, languageId) => {
+const compile = async (input, languageId, additionalFiles) => {
+  if(input.length == 0){
+    return `No source code available`;
+  }
+  
   try {
-    const jsonResponse = await createSubmission(input, languageId);
+    const jsonResponse = await createSubmission(input, languageId, additionalFiles);
 
     let jsonGetSolution;
     const startTime = Date.now();
@@ -26,7 +29,7 @@ const compile = async (input, languageId) => {
         );
         jsonGetSolution = await getSolution.json();
       }
-      if (Date.Now - startTime > TIMEOUT_MS) {
+      if (Date.now() - startTime > TIMEOUT_MS) {
         return `Server Timed Out Retrieving response You can access your result with this token: ${jsonResponse?.token}`;
       }
     }
@@ -43,7 +46,6 @@ const compile = async (input, languageId) => {
       return `Error:\n${compilationError}`;
     }
   } catch (error) {
-    console.error(error);
     return `Error: ${error.message}`;
   }
 };

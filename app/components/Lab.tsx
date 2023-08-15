@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useCompletion } from "ai/react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
-const Lab = () => {
-
-  const onFinish = (prompt, completion) => {
+const Lab = ({ sourceCodeObject }) => {
+  const onFinish = (prompt: any, completion: string) => {
     localStorage.setItem("local-completion", completion);
   };
 
   const { completion, complete, setCompletion } = useCompletion({
     body: {
+      ...sourceCodeObject,
       quiz: true,
     },
     onFinish,
@@ -24,13 +24,16 @@ const Lab = () => {
 
   const handleNewLabClick = async (e) => {
     localStorage.removeItem("local-completion");
-    await complete();
+    await complete("");
   };
 
   return (
     <div
       style={{
+        display: "flex",
         flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-between",
         height: "80vh",
         border: "1px solid #ccc",
         overflow: "auto",
@@ -42,9 +45,17 @@ const Lab = () => {
           flexDirection: "column",
           alignItems: "center",
           margin: "10px",
+          width: "100%"
         }}
       >
-        <ReactMarkdown>{completion}</ReactMarkdown>
+        <div
+          style={{
+            margin: "10px",
+            display: "block",
+          }}
+        >
+          <ReactMarkdown>{completion}</ReactMarkdown>
+        </div>
         <button
           onClick={handleNewLabClick}
           style={{

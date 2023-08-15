@@ -1,8 +1,9 @@
 import React from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useRef, useEffect } from "react";
+import { useCompletion } from "ai/react";
 
-const textAreaStyles = {
+const textAreaStyles : React.CSSProperties = {
   width: "100%",
   padding: "10px",
   fontSize: "1em",
@@ -11,7 +12,7 @@ const textAreaStyles = {
   resize: "none",
 };
 
-const buttonStyles = {
+const buttonStyles : React.CSSProperties = {
   fontFamily: "monospace",
   backgroundColor: "rgb(31, 31, 31)",
   color: "rgb(15, 228, 15)",
@@ -24,7 +25,11 @@ const buttonStyles = {
 
 const chatDisclosure =
   "ChatGPT may produce inaccurate information about people, places, or facts";
-const AskChat = ({ completion, input, handleInputChange, handleSubmit }) => {
+
+const AskChat = ({sourceCodeObject}) => {
+  const { completion, input, handleInputChange, handleSubmit } = useCompletion({
+    body: sourceCodeObject,
+  });
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -40,7 +45,7 @@ const AskChat = ({ completion, input, handleInputChange, handleSubmit }) => {
         justifyContent: "space-between",
         height: "80vh",
         border: "1px solid #ccc",
-        overflow: "auto",
+        overflow: "scroll",
       }}
     >
       <div
