@@ -10,9 +10,11 @@ const HomePage = () => {
             New Project
           </button>
           </Link>
+          <Link href="/projects">
           <button className='bg-black hover:bg-slate-600 text-white font-bold py-2 px-4 rounded ml-2'>
             Browse Projects
           </button>
+          </Link>
         </div>
       </div>
     </>

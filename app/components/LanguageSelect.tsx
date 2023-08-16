@@ -1,22 +1,34 @@
 import { useState } from "react";
 import Files from "../types/projectFiles";
+import starterFiles from "../files/starterFiles"
+import { useRouter } from 'next/navigation'
+
 const LanguageSelect = ({ languages }) => {
+  const router = useRouter();
   const [title, setTitle] = useState<string>("")
   const [languageId, setLanguageId] = useState<Number>(10);
-  const [files, setFiles] = useState<Files>();
+  const [files, setFiles] = useState<Files>(starterFiles.filter(file => file.languageId == languageId));
   const [lab, setLab] = useState<string>()
 
   const handleClick = async () => {
     try {
-      let newProject = await fetch('/api/project', {
+      let response = await fetch('/api/project', {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({})
+        body: JSON.stringify({
+          title,
+          files,
+          lab,
+          languageId,
+        })
       })
-  
-      console.log(newProject)
+
+
+      const newProject = await response.json();
+      const projectId = newProject._id;
+      router.push(`/projects/${projectId}`)
     } catch(error) {
       console.log(error.message)
     }
@@ -27,7 +39,10 @@ const LanguageSelect = ({ languages }) => {
   }
 
   const handleLanguageSelect = (newLanguageId: string) => {
-    setLanguageId(parseInt(newLanguageId));
+    const newLanguageNumber = parseInt(newLanguageId);
+    setLanguageId(newLanguageNumber);
+    setFiles(starterFiles.filter(file => file.languageId == newLanguageNumber))
+    setLab("");
   }
 
   return (

@@ -4,14 +4,14 @@ const reactIframeBoiler = (css, html, javascript) => {
         <html>
             <head>
                 <meta charset="UTF-8">
-                <style>${css.value}</style>
+                <style>${css}</style>
             </head>
             <body>
                 <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
                 <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
                 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-                ${html.value}
-                <script type="text/jsx">${javascript.value}</script>
+                ${html}
+                <script type="text/jsx">${javascript}</script>
             </body>
         </html>
         `

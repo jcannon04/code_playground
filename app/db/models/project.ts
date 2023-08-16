@@ -5,12 +5,15 @@ const projectSchema = new mongoose.Schema({
         type: String,
     },
     files: [{
-        name: {
+        fileName: {
             type: String,
         },
         sourceCode: {
             type: String,
         },
+        languageId: {
+            type: Number
+        }
     }],
     lab: {
         type: String,

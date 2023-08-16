@@ -75,7 +75,7 @@ function generatePromptFromData(codeData) {
 }
 
 function generateQuiz(codeData) {
-  const {source, output, language, prompt} = codeData;
+  const {language} = codeData;
   if(language == "SQL (SQLite 3.27.2)") {
     return`create a lab assignment for ${language} using the chinook database the assigment should ask students to generate a single query and should be target to a web development bootcamp. Give a small example of the required output. Don't worry about timeline or details of how to submit the assignment as those details may change or I may want to reuse the lab`
   }

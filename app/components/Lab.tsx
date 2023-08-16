@@ -2,11 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useCompletion } from "ai/react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
-const Lab = ({ sourceCodeObject }) => {
-  const onFinish = (prompt: any, completion: string) => {
-    localStorage.setItem("local-completion", completion);
-  };
+const Lab = ({ sourceCodeObject, projectId, projectLab, setProjectLab }) => {
+  const onFinish = async (prompt: any, completion: string) => {
+    try {
+      const response = await fetch(`/api/project/${projectId}`, {
+        method: "PUT",
+        body: JSON.stringify({ lab: completion }),
+      });
 
+      const newProject = await response.json();
+      const newProjectLab = newProject.lab;
+      setProjectLab(newProjectLab);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  
   const { completion, complete, setCompletion } = useCompletion({
     body: {
       ...sourceCodeObject,
@@ -16,14 +27,10 @@ const Lab = ({ sourceCodeObject }) => {
   });
 
   useEffect(() => {
-    const localCompletion = localStorage.getItem("local-completion") || null;
-    if (localCompletion) {
-      setCompletion(localCompletion);
-    }
+      setCompletion(projectLab);
   }, []);
 
   const handleNewLabClick = async (e) => {
-    localStorage.removeItem("local-completion");
     await complete("");
   };
 
@@ -45,7 +52,7 @@ const Lab = ({ sourceCodeObject }) => {
           flexDirection: "column",
           alignItems: "center",
           margin: "10px",
-          width: "100%"
+          width: "100%",
         }}
       >
         <div

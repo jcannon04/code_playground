@@ -1,8 +1,4 @@
-interface File {
-    languageId: number
-    fileName: string,
-    sourceCode: string
-}
+import File from "./projectFile"
 
 interface Files extends Array<File> {}
 

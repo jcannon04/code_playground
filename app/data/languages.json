@@ -2,7 +2,7 @@
     {
       "id": 10,
       "name": "Web Playground",
-      "editor" : "web"
+      "editor" : "javascript"
     },
     {
       "id": 50,

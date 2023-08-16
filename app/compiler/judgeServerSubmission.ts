@@ -11,7 +11,6 @@ export async function createSubmission(input, languageId, additionalFiles) {
       throw error
     }
   }
-
   try {
       let body = getBody(input, languageId, additionalFiles);
       const response = await fetch(`http://159.203.136.237:2358/submissions/`, {

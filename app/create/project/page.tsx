@@ -16,7 +16,6 @@ const NewProjectForm = () => {
       <div className='mt-12'>
         <LanguageSelect
           languages={languages}
-          selectHandler={selectHandler}
         />
       </div>
     </div>
