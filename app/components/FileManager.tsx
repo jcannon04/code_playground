@@ -1,5 +1,3 @@
-
-
 const buttonStyles = {
   fontFamily: "monospace",
   backgroundColor: "rgb(31, 31, 31)",
@@ -18,6 +16,7 @@ const buyMeACoffeeStyles = {
 
 const buttonDivStyles = {
   display: "flex",
+  width: "66.6%"
 };
 
 const FileManager = ({
@@ -25,46 +24,55 @@ const FileManager = ({
   handleRunClick,
   fileName,
   displayFiles,
+  handleSaveClick
 }) => {
   return (
     <div style={buttonDivStyles}>
-      { displayFiles && <div>
-        <button
-          style={
-            fileName === "script.js"
-              ? { ...buttonStyles, opacity: 0.6 }
-              : buttonStyles
-          }
-          onClick={() => handleFileChange("script.js")}
-        >
-          script.js
-        </button>
-        <button
-          style={
-            fileName === "style.css"
-              ? { ...buttonStyles, opacity: 0.6 }
-              : buttonStyles
-          }
-          onClick={() => handleFileChange("style.css")}
-        >
-          style.css
-        </button>
-        <button
-          style={
-            fileName === "index.html"
-              ? { ...buttonStyles, opacity: 0.6 }
-              : buttonStyles
-          }
-          onClick={() => handleFileChange("index.html")}
-        >
-          index.html
-        </button>
-      </div>}
+      {displayFiles && (
+        <div style={{marginRight: "auto"}}>
+          <button
+            style={
+              fileName === "script.js"
+                ? { ...buttonStyles, opacity: 0.6 }
+                : buttonStyles
+            }
+            onClick={() => handleFileChange("script.js")}
+          >
+            script.js
+          </button>
+          <button
+            style={
+              fileName === "style.css"
+                ? { ...buttonStyles, opacity: 0.6 }
+                : buttonStyles
+            }
+            onClick={() => handleFileChange("style.css")}
+          >
+            style.css
+          </button>
+          <button
+            style={
+              fileName === "index.html"
+                ? { ...buttonStyles, opacity: 0.6 }
+                : buttonStyles
+            }
+            onClick={() => handleFileChange("index.html")}
+          >
+            index.html
+          </button>
+        </div>
+      )}
       <button
         onClick={handleRunClick}
-        style={{ ...buttonStyles, backgroundColor: "blue" }}
+        style={{ ...buttonStyles, backgroundColor: "blue", color: "white" }}
       >
         Run
+      </button>
+      <button
+        onClick={handleSaveClick}
+        style={{ ...buttonStyles, backgroundColor: "green", color: "white" }}
+      >
+        Save
       </button>
       <a href='https://www.buymeacoffee.com/cannontech' target='_blank'>
         <img

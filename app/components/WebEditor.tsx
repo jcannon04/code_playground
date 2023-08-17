@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
 import ControlledEditor from "@monaco-editor/react";
-
 
 const editorOptions = {
   fontSize: 16,
@@ -15,13 +13,20 @@ const WebEditor = ({
   beforeMount,
   source,
 }) => {
+  const language =
+    path === "style.css"
+      ? "css"
+      : path === "index.html"
+      ? "html"
+      : defaultLanguage;
+
   return (
     <div style={{ flex: 2 }}>
       <ControlledEditor
         height={height}
         theme={theme}
         path={path}
-        language={defaultLanguage}
+        language={language}
         value={source}
         onChange={onChange}
         options={editorOptions}

@@ -6,7 +6,6 @@ import WebEditor from "@/app/components/WebEditor";
 import Preview from "@/app/components/Preview";
 import AskChat from "@/app/components/AskChat";
 import Lab from "@/app/components/Lab";
-import Files from "@/app/types/projectFiles";
 import File from "@/app/types/projectFile";
 import { compile } from "@/app/compiler/judge";
 import codeOutputBoiler from "@/app/iframes/codeOutputboiler";
@@ -14,22 +13,13 @@ import reactIframeBoiler from "@/app/iframes/reactBoilerPlate";
 import languages from "../../data/languages.json";
 import { emmetHTML } from "emmet-monaco-es";
 import { SourceCodeObject } from "@/app/types/sourceCodeObject";
-// const saveFilesToLocalStorage = (files) => {
-//     localStorage.setItem("webPlaygroundFiles", JSON.stringify(files));
-//   };
 
-//   const loadFilesFromLocalStorage = () => {
-//     const storedFiles = localStorage.getItem("webPlaygroundFiles");
-//     return storedFiles ? JSON.parse(storedFiles) : starterFiles;
-//   };
 const ProjectPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
   const [languageId, setLanguageId] = useState(10);
-  // const [project, setProject] = useState();
   const [mode, setMode] = useState("preview");
   const [files, setFiles] = useState([]);
   const [currentFile, setCurrentFile] = useState<File>(null);
-  const [source, setSource] = useState("");
   const [output, setOutput] = useState("");
   const [codeChangedTimeout, setCodeChangedTimeout] = useState(null);
   const disposeEmmetHTMLRef = useRef<() => void | undefined>();
@@ -37,6 +27,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
   const [sourceCodeObject, setSourceCodeObject] =
     useState<SourceCodeObject>(null);
   const [projectLab, setProjectLab] = useState("");
+
   const isWebMode = (langId: number) => langId === 10;
   const additionalFiles = (langId: number) => langId == 82;
 
@@ -45,7 +36,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
   }, []);
 
   useEffect(() => {}, []);
-  const handleEditorWillMount = (monaco) => {
+  const handleEditorWillMount = (monaco: typeof import("monaco-editor")) => {
     disposeEmmetHTMLRef.current = emmetHTML(monaco);
   };
 
@@ -93,7 +84,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
   const updatePreview = () => {
     const iframe = document.createElement("iframe");
     const preview = document.getElementById("preview");
-    let iframeContent;
+    let iframeContent: string;
 
     if (isWebMode(languageId)) {
       const javascript = files.find(
@@ -127,7 +118,6 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
       setLanguageId(newProject.languageId);
       setFiles(newProject.files);
       setCurrentFile(newProject.files[0]);
-      setSource(newProject.files[0].sourceCode);
       if (isWebMode(newProject.languageId)) {
         setSourceCodeObject({
           css: newProject.files.find(
@@ -156,8 +146,8 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
   const handleFileChange = (newFileName: string) => {
     let newCurrentFile = files.find((file) => file.fileName === newFileName);
     setCurrentFile(newCurrentFile);
-    setSource(newCurrentFile.sourceCode);
   };
+
   const handleCodeChange = (value: string) => {
     if (isWebMode(languageId)) {
       const updatedFile = { ...currentFile, sourceCode: value };
@@ -170,18 +160,21 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
 
       const newTimeout = setTimeout(() => {
         setFiles(updatedFiles);
+        setCurrentFile(updatedFile)
       }, 1000);
 
       setCodeChangedTimeout(newTimeout);
     } else {
-      setSource(value);
+      setCurrentFile({ ...currentFile, sourceCode: value })
+      const updatedFiles = [{ ...currentFile, sourceCode: value }]
+      setFiles(updatedFiles);
     }
   };
   const handleRunClick = async () => {
     if (!isWebMode(languageId)) {
       try {
         const result = await compile(
-          source,
+          currentFile.sourceCode,
           languageId,
           additionalFiles(languageId)
           );
@@ -194,6 +187,19 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const handleSaveClick = async () => {
+    try {
+      const response = await fetch(`/api/project/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ files }),
+      });
+
+      console.log(await response.json())
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
   const updateChatInfo = () => {
     if (isWebMode(languageId)) {
       setSourceCodeObject({
@@ -205,12 +211,13 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
       });
     } else {
       setSourceCodeObject({
-        source,
+        source: currentFile.sourceCode,
         output: output,
         language: languages.find((lang) => lang.id === languageId).name,
       });
     }
   };
+
   const handleSwitchToPreview = () => {
     setMode("preview");
   };
@@ -235,6 +242,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
         handleRunClick={handleRunClick}
         fileName={currentFile?.fileName}
         displayFiles={isWebMode(languageId)}
+        handleSaveClick={handleSaveClick}
       />
       {project && (
         <div style={{ display: "flex" }}>
@@ -247,8 +255,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
             }
             onChange={handleCodeChange}
             beforeMount={handleEditorWillMount}
-            source={source}
-            //   updateChatInfo={updateChatInfo}
+            source={currentFile.sourceCode}
           />
           {mode == "preview" && <Preview />}
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useCompletion } from "ai/react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 
@@ -17,7 +17,7 @@ const Lab = ({ sourceCodeObject, projectId, projectLab, setProjectLab }) => {
       console.log(err.message);
     }
   };
-  
+
   const { completion, complete, setCompletion } = useCompletion({
     body: {
       ...sourceCodeObject,
@@ -27,7 +27,7 @@ const Lab = ({ sourceCodeObject, projectId, projectLab, setProjectLab }) => {
   });
 
   useEffect(() => {
-      setCompletion(projectLab);
+    setCompletion(projectLab);
   }, []);
 
   const handleNewLabClick = async (e) => {
@@ -40,7 +40,7 @@ const Lab = ({ sourceCodeObject, projectId, projectLab, setProjectLab }) => {
         display: "flex",
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-between",
+        alignItems: "center",
         height: "80vh",
         border: "1px solid #ccc",
         overflow: "auto",
@@ -48,21 +48,11 @@ const Lab = ({ sourceCodeObject, projectId, projectLab, setProjectLab }) => {
     >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          width:"100%",
           margin: "10px",
-          width: "100%",
         }}
       >
-        <div
-          style={{
-            margin: "10px",
-            display: "block",
-          }}
-        >
-          <ReactMarkdown>{completion}</ReactMarkdown>
-        </div>
+        <ReactMarkdown>{completion}</ReactMarkdown>
         <button
           onClick={handleNewLabClick}
           style={{

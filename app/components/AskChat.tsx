@@ -17,7 +17,7 @@ const buttonStyles : React.CSSProperties = {
   backgroundColor: "rgb(31, 31, 31)",
   color: "rgb(15, 228, 15)",
   borderRadius: "4px",
-  padding: "11px 20px",
+  padding: "13px 20px",
   cursor: "pointer",
   transition: "background-color 0.2s",
   float: "right",

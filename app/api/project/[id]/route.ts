@@ -29,20 +29,30 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
 //update a project
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
-    const { lab } = await request.json();
     const { id } = params;
-    
-    try {
-        // Update the project using the correct _id value
-        await Project.findByIdAndUpdate(id, { lab });
 
-        // Retrieve the updated project using the correct _id value
+    try {
+        // Retrieve the project from the database
+        const project = await Project.findById(id);
+
+        if (!project) {
+            return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+        }
+
+        // Merge the existing project data with the data from the request body
+        const updatedProjectData = { ...project.toObject(), ...await request.json() };
+
+        // Update the project using the merged data
+        await Project.findByIdAndUpdate(id, updatedProjectData);
+
+        // Retrieve the updated project
         const updatedProject = await Project.findById(id);
 
         // Return the response with the updated project
-        return NextResponse.json(updatedProject , { status: 201 });
+        return NextResponse.json(updatedProject, { status: 200 });
     } catch (error) {
         // Handle the error and return an appropriate response
         return NextResponse.json({ error }, { status: 500 });
     }
 }
+
