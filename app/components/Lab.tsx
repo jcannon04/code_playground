@@ -35,40 +35,29 @@ const Lab = ({ sourceCodeObject, projectId, projectLab, setProjectLab }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flex: 1,
-        flexDirection: "column",
-        alignItems: "center",
-        height: "80vh",
-        border: "1px solid #ccc",
-        overflow: "auto",
-      }}
-    >
-      <div
-        style={{
-          width:"100%",
+    <div style={{
+      display: "flex",
+      flex: 1,
+      flexDirection: "column",
+      justifyContent: "space-between",
+      height: "80vh",
+      border: "1px solid #ccc",
+      overflow: "scroll",
+    }}>
+      <div style={{
           margin: "10px",
-        }}
-      >
+          display: "flex",
+          flexDirection: "column",
+          justifyContent:"center"
+        }}>
         <ReactMarkdown>{completion}</ReactMarkdown>
-        <button
-          onClick={handleNewLabClick}
-          style={{
-            fontFamily: "monospace",
-            backgroundColor: "rgb(31, 31, 31)",
-            color: "rgb(15, 228, 15)",
-            borderRadius: "4px",
-            padding: "10px 20px",
-            cursor: "pointer",
-            marginBottom: "2px",
-            transition: "background-color 0.2s",
-          }}
-        >
-          New Lab
-        </button>
       </div>
+      <button
+        onClick={handleNewLabClick}
+        className='bg-gray-800 text-green-400 font-mono rounded-md py-2 px-4 cursor-pointer mt-2 transition duration-200 hover:bg-green-400 hover:text-gray-800'
+      >
+        New Lab
+      </button>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 import { NextResponse } from "next/server";
 export const runtime = "edge";
 
-export async function POST(req, res) {
+export async function POST(req: any, res: any) {
   try {
     const codeData = await req.json();
     let prompt : string;
@@ -43,7 +43,7 @@ export async function POST(req, res) {
   }
 }
 
-function generatePromptFromData(codeData) {
+function generatePromptFromData(codeData: { css: any; js: any; html: any; prompt: any; }) {
   const { css, js, html, prompt } = codeData;
   const codeSnippet = `
   <html>
@@ -105,6 +105,8 @@ Attach an event listener to the section of the HTML page where the images are go
 
 Once the users ‘clicks’ a product, generate three new products for the user to pick from.
 2. ...
+
+Also include grading information and/ or a rubric
 `;
 }
 

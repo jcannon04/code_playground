@@ -267,7 +267,6 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
               projectId={id}
               projectLab={projectLab}
               setProjectLab={ setProjectLab }
-              
             />
           )}
         </div>
