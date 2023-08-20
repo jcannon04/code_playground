@@ -7,7 +7,7 @@ const codeOutputBoiler = (output: string) => {
                 <style></style>
             </head>
             <body>
-                <pre>${output}<pre?
+                <pre>${output}</pre>
                 <script type="text/jsx"></script>
             </body>
         </html>
