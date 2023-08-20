@@ -14,6 +14,7 @@ function useProjectSetup(id: string) {
   }, []);
 
   const setUpProject = async () => {
+    if(!parseInt(id)) return
     try {
       const response = await fetch(`/api/project/${id}`);
       const newProject = await response.json();
