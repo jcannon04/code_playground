@@ -21,22 +21,22 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
 
   const isWebMode = (langId: number) => langId === 10;
   const additionalFiles = (langId: number) => langId == 82;
+    const {
+      project,
+      projectLab,
+      languageId,
+      files,
+      currentFile,
+      sourceCodeObject,
+      setUpProject,
+      setProject,
+      setProjectLab,
+      setLanguageId,
+      setFiles,
+      setCurrentFile,
+      setSourceCodeObject,
+    } = useProjectSetup(id);
 
-  const {
-    project,
-    projectLab,
-    languageId,
-    files,
-    currentFile,
-    sourceCodeObject,
-    setUpProject,
-    setProject,
-    setProjectLab,
-    setLanguageId,
-    setFiles,
-    setCurrentFile,
-    setSourceCodeObject,
-  } = useProjectSetup(id);
 
   // Import the Monaco Editor and other browser-specific dependencies here
   useMonacoContributions();
