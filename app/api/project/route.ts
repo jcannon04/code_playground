@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import Project from "../../db/models/project";
 import mongoose from "mongoose";
-const uri = process.env.MONGO_URI || '';
+const uri = process.env.MONGO_URI_DOCKER || '';
 
 mongoose.connect(uri)
 
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
         let projects = await Project.find({});
         return NextResponse.json(projects);
     } catch (error: any) {
-        return NextResponse.error();
+        return NextResponse.json({ error }, { status: 500 });
     }
 
 }
@@ -23,7 +23,6 @@ export async function POST(request: Request) {
         return NextResponse.json(project);
     } catch (error: any) {
         console.log(error.message);
-        return NextResponse.error();
+        return NextResponse.json({ error }, { status: 500 });
     }
-
 }

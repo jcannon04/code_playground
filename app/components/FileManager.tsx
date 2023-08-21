@@ -1,4 +1,7 @@
+
+import Spinner from "./Spinner";
 const buttonStyles = {
+  display: "inline-block",
   fontFamily: "monospace",
   backgroundColor: "rgb(31, 31, 31)",
   color: "rgb(15, 228, 15)",
@@ -7,6 +10,9 @@ const buttonStyles = {
   cursor: "pointer",
   marginBottom: "2px",
   transition: "background-color 0.2s",
+  minWidth: "72.5px",
+  justifyContent: "center"
+  
 };
 
 const buyMeACoffeeStyles = {
@@ -24,7 +30,9 @@ const FileManager = ({
   handleRunClick,
   fileName,
   displayFiles,
-  handleSaveClick
+  handleSaveClick,
+  isSaveLoading,
+  isRunLoading
 }) => {
   return (
     <div style={buttonDivStyles}>
@@ -66,21 +74,14 @@ const FileManager = ({
         onClick={handleRunClick}
         style={{ ...buttonStyles, backgroundColor: "blue", color: "white" }}
       >
-        Run
+        {isRunLoading ? <Spinner /> : "Run"}
       </button>
       <button
         onClick={handleSaveClick}
         style={{ ...buttonStyles, backgroundColor: "green", color: "white" }}
       >
-        Save
+        {isSaveLoading ? <Spinner /> : "Save"}
       </button>
-      <a href='https://www.buymeacoffee.com/cannontech' target='_blank'>
-        <img
-          src='https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png'
-          alt='Buy Me A Coffee'
-          style={buyMeACoffeeStyles}
-        />
-      </a>
     </div>
   );
 };

@@ -25,7 +25,6 @@ const LanguageSelect = ({ languages }) => {
         })
       })
 
-
       const newProject = await response.json();
       const projectId = newProject._id;
       router.push(`/projects/${projectId}`)

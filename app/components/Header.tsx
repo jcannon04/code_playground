@@ -1,22 +1,52 @@
 import Link from "next/link";
-const Header = () => {
+import { UserButton, auth } from "@clerk/nextjs";
+
+const Header = async ({}) => {
+  const { userId } = auth();
+
   return (
-    <nav className='bg-black p-2 mb-4 flex justify-between items-center'>
+    <nav className='flex items-center justify-between px-6 py-4 mb-5 bg-black'>
       <div className='flex items-center'>
-        {/* Logo */}
         <Link href='/'>
-          <div className='text-white text-lg font-bold'>Logo</div>
+          <div className='text-lg font-bold text-white'>CodeCrewLabs</div>
         </Link>
       </div>
-      <div className='space-x-4'>
-        {/* Sign Up */}
-        <a href='#' className='text-white'>
-          Sign Up
-        </a>
-        {/* Log In */}
-        <a href='#' className='text-white'>
-          Log In
-        </a>
+      <div className='flex items-center text-white'>
+        {!userId && (
+          <>
+            <Link
+              href='/sign-in'
+              className='text-gray-300 hover:text-white mr-4'
+            >
+              Sign In
+            </Link>
+            <Link
+              href='/sign-up'
+              className='text-gray-300 hover:text-white mr-4'
+            >
+              Sign Up
+            </Link>
+          </>
+        )}
+        {userId && (
+          <div>
+            <Link
+              href='/dashboard'
+              className='text-gray-300 hover:text-white mr-4'
+            >
+              Dashboard
+            </Link>
+            <Link
+              href='/profile'
+              className='text-gray-300 hover:text-white mr-4'
+            >
+              Profile
+            </Link>
+          </div>
+        )}
+        <div className='ml-auto'>
+          <UserButton afterSignOutUrl='/' />
+        </div>
       </div>
     </nav>
   );

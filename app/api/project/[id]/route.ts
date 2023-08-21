@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Project from "../../../db/models/project";
 import mongoose from "mongoose";
 
-const uri = process.env.MONGO_URI || '';
+const uri = process.env.MONGO_URI_DOCKER || '';
 mongoose.connect(uri);
 
 //get a project
@@ -23,7 +23,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
         await Project.findByIdAndDelete(id);
         return NextResponse.json({});
     } catch (error) {
-        return NextResponse.error();
+        return NextResponse.json({ error }, { status: 500 });
     }
 }
 

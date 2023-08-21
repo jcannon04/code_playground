@@ -1,45 +1,46 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import PreviewNav from "@/app/components/previewNav";
-import FileManager from "@/app/components/FileManager";
-import WebEditor from "@/app/components/WebEditor";
-import Preview from "@/app/components/Preview";
-import AskChat from "@/app/components/AskChat";
-import Lab from "@/app/components/Lab";
+import ProjectToolBar from "@/app/components/ProjectToolBar";
 import File from "@/app/types/projectFile";
-import { compile } from "@/app/compiler/judge";
 import codeOutputBoiler from "@/app/iframes/codeOutputboiler";
 import reactIframeBoiler from "@/app/iframes/reactBoilerPlate";
 import languages from "../../data/languages.json";
 import { emmetHTML } from "emmet-monaco-es";
-import { SourceCodeObject } from "@/app/types/sourceCodeObject";
+import EditorAndPreview from "@/app/components/EditorAndPreview";
+import useMonacoContributions from "@/app/hooks/useMonacoImports";
+import useProjectSetup from "@/app/hooks/useProjectSetup";
 
 const ProjectPage = ({ params }: { params: { id: string } }) => {
   const { id } = params;
-  const [languageId, setLanguageId] = useState(10);
   const [mode, setMode] = useState("preview");
-  const [files, setFiles] = useState([]);
-  const [currentFile, setCurrentFile] = useState<File>(null);
-  const [output, setOutput] = useState("");
+  const [output, setOutput] = useState<string>("");
   const [codeChangedTimeout, setCodeChangedTimeout] = useState(null);
   const disposeEmmetHTMLRef = useRef<() => void | undefined>();
-  const [project, setProject] = useState();
-  const [sourceCodeObject, setSourceCodeObject] =
-    useState<SourceCodeObject>(null);
-  const [projectLab, setProjectLab] = useState("");
+  const [isRunLoading, setIsRunloading] = useState(false);
+  const [isSaveLoading, setIsSaveloading] = useState(false);
 
   const isWebMode = (langId: number) => langId === 10;
   const additionalFiles = (langId: number) => langId == 82;
+    const {
+      project,
+      projectLab,
+      languageId,
+      files,
+      currentFile,
+      sourceCodeObject,
+      setUpProject,
+      setProject,
+      setProjectLab,
+      setLanguageId,
+      setFiles,
+      setCurrentFile,
+      setSourceCodeObject,
+    } = useProjectSetup(id);
 
-  useEffect(() => {
-    setUpProject();
-  }, []);
 
-  useEffect(() => {}, []);
-  const handleEditorWillMount = (monaco: typeof import("monaco-editor")) => {
-    disposeEmmetHTMLRef.current = emmetHTML(monaco);
-  };
-
+  // Import the Monaco Editor and other browser-specific dependencies here
+  useMonacoContributions();
+  
   useEffect(() => {
     if (mode == "preview" && project) {
       updatePreview();
@@ -47,39 +48,9 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
     updateChatInfo();
   }, [files, mode, output, languageId, project]);
 
-  useEffect(() => {
-    // Import the Monaco Editor and other browser-specific dependencies here
-    import("monaco-editor/esm/vs/basic-languages/html/html.contribution");
-    import(
-      "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution"
-    );
-    import("monaco-editor/esm/vs/basic-languages/css/css.contribution");
-    import("monaco-editor/esm/vs/basic-languages/cpp/cpp.contribution");
-    import("monaco-editor/esm/vs/basic-languages/clojure/clojure.contribution");
-    import("monaco-editor/esm/vs/basic-languages/csharp/csharp.contribution");
-    import("monaco-editor/esm/vs/basic-languages/elixir/elixir.contribution");
-    import("monaco-editor/esm/vs/basic-languages/fsharp/fsharp.contribution");
-    import("monaco-editor/esm/vs/basic-languages/go/go.contribution");
-    import("monaco-editor/esm/vs/basic-languages/java/java.contribution");
-    import("monaco-editor/esm/vs/basic-languages/kotlin/kotlin.contribution");
-    import("monaco-editor/esm/vs/basic-languages/lua/lua.contribution");
-    import(
-      "monaco-editor/esm/vs/basic-languages/objective-c/objective-c.contribution"
-    );
-    import("monaco-editor/esm/vs/basic-languages/pascal/pascal.contribution");
-    import("monaco-editor/esm/vs/basic-languages/perl/perl.contribution");
-    import("monaco-editor/esm/vs/basic-languages/php/php.contribution");
-    import("monaco-editor/esm/vs/basic-languages/python/python.contribution");
-    import("monaco-editor/esm/vs/basic-languages/r/r.contribution");
-    import("monaco-editor/esm/vs/basic-languages/ruby/ruby.contribution");
-    import("monaco-editor/esm/vs/basic-languages/rust/rust.contribution");
-    import("monaco-editor/esm/vs/basic-languages/scala/scala.contribution");
-    import("monaco-editor/esm/vs/basic-languages/sql/sql.contribution");
-    import("monaco-editor/esm/vs/basic-languages/swift/swift.contribution");
-    import(
-      "monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution"
-    );
-  }, []);
+  const handleEditorWillMount = (monaco: typeof import("monaco-editor")) => {
+    disposeEmmetHTMLRef.current = emmetHTML(monaco);
+  };
 
   const updatePreview = () => {
     const iframe = document.createElement("iframe");
@@ -109,40 +80,6 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
     preview.appendChild(iframe);
   };
 
-  const setUpProject = async () => {
-    try {
-      const response = await fetch(`/api/project/${id}`);
-      const newProject = await response.json();
-      setProject(newProject);
-      setProjectLab(newProject.lab);
-      setLanguageId(newProject.languageId);
-      setFiles(newProject.files);
-      setCurrentFile(newProject.files[0]);
-      if (isWebMode(newProject.languageId)) {
-        setSourceCodeObject({
-          css: newProject.files.find(
-            (file: File) => file.fileName === "style.css"
-          ),
-          js: newProject.files.find(
-            (file: File) => file.fileName === "script.js"
-          ),
-          html: newProject.files.find(
-            (file: File) => file.fileName === "index.html"
-          ),
-        });
-      } else {
-        setSourceCodeObject({
-          source: newProject.files[0].sourceCode,
-          output: output,
-          language: languages.find((lang) => lang.id === newProject.languageId)
-            .name,
-        });
-      }
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
   const handleFileChange = (newFileName: string) => {
     let newCurrentFile = files.find((file) => file.fileName === newFileName);
     setCurrentFile(newCurrentFile);
@@ -160,45 +97,56 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
 
       const newTimeout = setTimeout(() => {
         setFiles(updatedFiles);
-        setCurrentFile(updatedFile)
+        setCurrentFile(updatedFile);
       }, 1000);
 
       setCodeChangedTimeout(newTimeout);
     } else {
-      setCurrentFile({ ...currentFile, sourceCode: value })
-      const updatedFiles = [{ ...currentFile, sourceCode: value }]
+      setCurrentFile({ ...currentFile, sourceCode: value });
+      const updatedFiles = [{ ...currentFile, sourceCode: value }];
       setFiles(updatedFiles);
     }
   };
   const handleRunClick = async () => {
+    setIsRunloading(true);
     if (!isWebMode(languageId)) {
       try {
-        const result = await compile(
-          currentFile.sourceCode,
-          languageId,
-          additionalFiles(languageId)
-          );
-        setOutput(result);
+        const result = await fetch("/api/submission", {
+          method: "POST",
+          body: JSON.stringify({
+            input: currentFile.sourceCode,
+            languageId,
+            additionalFiles: additionalFiles(languageId),
+          }),
+        });
+        console.log(result.body)
+        const resultOut = await result.json();
+        setOutput(resultOut);
+        setIsRunloading(false);
       } catch (e) {
-        setOutput(e.message);
+        setIsRunloading(false);
+        setOutput(e);
       }
     } else {
       updatePreview();
+      setIsRunloading(false);
     }
   };
 
   const handleSaveClick = async () => {
+    setIsSaveloading(true);
     try {
       const response = await fetch(`/api/project/${id}`, {
         method: "PUT",
         body: JSON.stringify({ files }),
       });
 
-      console.log(await response.json())
+      setIsSaveloading(false);
     } catch (err) {
+      setIsSaveloading(false);
       console.log(err.message);
     }
-  }
+  };
 
   const updateChatInfo = () => {
     if (isWebMode(languageId)) {
@@ -231,45 +179,41 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
   };
   return (
     <>
-      <PreviewNav
+      <ProjectToolBar
         handleSwitchToChat={handleSwitchToChat}
         handleSwitchToLab={handleSwitchToLab}
         handleSwitchToPreview={handleSwitchToPreview}
         mode={mode}
-      />
-      <FileManager
         handleFileChange={handleFileChange}
         handleRunClick={handleRunClick}
         fileName={currentFile?.fileName}
         displayFiles={isWebMode(languageId)}
         handleSaveClick={handleSaveClick}
+        isRunLoading={isRunLoading}
+        isSaveLoading={isSaveLoading}
+        isWebMode={isWebMode}
+        currentFile={currentFile}
+        languageId={languageId}
       />
       {project && (
-        <div style={{ display: "flex" }}>
-          <WebEditor
-            height='80vh'
-            theme='vs-dark'
-            path={currentFile?.fileName}
-            defaultLanguage={
-              languages.find((lang) => languageId === lang.id)?.editor
-            }
-            onChange={handleCodeChange}
-            beforeMount={handleEditorWillMount}
-            source={currentFile.sourceCode}
-          />
-          {mode == "preview" && <Preview />}
-
-          {mode == "chat" && <AskChat sourceCodeObject={sourceCodeObject} />}
-
-          {mode == "quiz" && (
-            <Lab
-              sourceCodeObject={sourceCodeObject}
-              projectId={id}
-              projectLab={projectLab}
-              setProjectLab={ setProjectLab }
-            />
-          )}
-        </div>
+        <EditorAndPreview
+          height='80vh'
+          theme='vs-dark'
+          path={currentFile?.fileName}
+          defaultLanguage={
+            languages.find((lang) => languageId === lang.id)?.editor
+          }
+          handleCodeChange={handleCodeChange}
+          handleEditorWillMount={handleEditorWillMount}
+          source={currentFile.sourceCode}
+          sourceCodeObject={sourceCodeObject}
+          mode={mode}
+          currentFile={currentFile}
+          languageId={languageId}
+          id={id}
+          projectLab={projectLab}
+          setProjectLab={setProjectLab}
+        />
       )}
     </>
   );
