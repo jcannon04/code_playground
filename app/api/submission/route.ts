@@ -19,7 +19,6 @@ export async function POST(request: Request) {
 
       try {
         let body = getBody(input, languageId, b64additionalFiles);
-        console.log(process.env.JUDGE_SUBMISSIONS_URL)
         const response = await fetch(`${process.env.JUDGE_SUBMISSIONS_URL}/`, {
           method: "POST",
           headers: {
@@ -29,12 +28,10 @@ export async function POST(request: Request) {
           body: body,
         });
 
-        console.log(input, languageId, additionalFiles)
     
         let jsonGetSolution;
         const startTime = Date.now();
         const jsonResponse = await response.json();
-        console.log(jsonResponse)
         while (
           jsonGetSolution?.status?.description !== "Accepted" &&
           jsonGetSolution?.stderr == null &&
@@ -50,13 +47,11 @@ export async function POST(request: Request) {
               }
             );
             jsonGetSolution = await getSolution.json();
-            console.log(jsonGetSolution)
           }
           if (Date.now() - startTime > TIMEOUT_MS) {
             return NextResponse.json(`Server Timed Out Retrieving response You can access your result with this token: ${jsonResponse?.token}`);
           }
         }
-        console.log(atob(jsonGetSolution.stdout))
         if (jsonGetSolution.stdout) {
           const decodedOutput = atob(jsonGetSolution.stdout);
     

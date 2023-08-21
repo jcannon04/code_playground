@@ -21,26 +21,28 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
 
   const isWebMode = (langId: number) => langId === 10;
   const additionalFiles = (langId: number) => langId == 82;
-    const {
-      project,
-      projectLab,
-      languageId,
-      files,
-      currentFile,
-      sourceCodeObject,
-      setUpProject,
-      setProject,
-      setProjectLab,
-      setLanguageId,
-      setFiles,
-      setCurrentFile,
-      setSourceCodeObject,
-    } = useProjectSetup(id);
 
+  // hook for setting up project
+  const {
+    project,
+    projectLab,
+    languageId,
+    files,
+    currentFile,
+    sourceCodeObject,
+    setUpProject,
+    setProject,
+    setProjectLab,
+    setLanguageId,
+    setFiles,
+    setCurrentFile,
+    setSourceCodeObject,
+  } = useProjectSetup(id);
 
-  // Import the Monaco Editor and other browser-specific dependencies here
+  // hook to set up monaco editor dependencies
   useMonacoContributions();
-  
+
+  // up date the preview when any of it's dependencies are updated
   useEffect(() => {
     if (mode == "preview" && project) {
       updatePreview();
@@ -119,7 +121,7 @@ const ProjectPage = ({ params }: { params: { id: string } }) => {
             additionalFiles: additionalFiles(languageId),
           }),
         });
-        console.log(result.body)
+        console.log(result.body);
         const resultOut = await result.json();
         setOutput(resultOut);
         setIsRunloading(false);

@@ -14,7 +14,7 @@ const ProjectsPage: React.FC = () => {
       const newProjects = await res.json();
       setProjects(newProjects);
     } catch (error) {
-      console.error(error);
+      setProjects([]);
     }
   };
   
