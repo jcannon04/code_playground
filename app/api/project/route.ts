@@ -8,6 +8,7 @@ mongoose.connect(uri)
 
 export async function GET(request: Request) {
     try {
+        
         let projects = await Project.find({});
         return NextResponse.json(projects);
     } catch (error: any) {
@@ -18,8 +19,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        const { title, files, lab, languageId } = await request.json();
-        let project = await Project.create({ title, files, lab, languageId });
+        const { title, files, lab, languageId , owner} = await request.json();
+        let project = await Project.create({ title, files, lab, languageId, owner });
         return NextResponse.json(project);
     } catch (error: any) {
         console.log(error.message);
