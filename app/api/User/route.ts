@@ -1,64 +1,88 @@
+// Import necessary libraries and modules
 import { NextResponse } from "next/server";
 import User from "../../db/models/User";
 import Project from "../../db/models/project";
 import mongoose from "mongoose";
+
+// URI for MongoDB connection
 const uri = process.env.MONGO_URI_DOCKER || '';
 
+// Establish an initial connection to MongoDB
 mongoose.connect(uri);
 
+// Handle GET requests
 export async function GET(request: Request) {
-    return NextResponse.json("success",);
+    // Return a success response
+    return NextResponse.json("success");
 }
 
+// Handle POST requests
 export async function POST(request: Request) {
-    // Try to establish a connection to MongoDB
-    try {
-        await mongoose.connect(uri);
-    } catch (err) {
-        return NextResponse.json("Failed to connect to MongoDB:", err.message);
-    }
+    // Establish a connection to MongoDB
+    mongoose.connect(uri);
 
     try {
+        // Extract required data from the request body
         let { students, email, username, role, teachers } = await request.json();
+
+        // Check if a user with the provided email already exists
         let databaseUser = await User.findOne({ email: email });
 
-
+        // If user exists, return a response indicating that the user is not new
         if (databaseUser) {
-            return NextResponse.json(databaseUser);
-
+            return NextResponse.json({ newUser: false });
         }
 
+        // Check and initialize students and teachers arrays if they are not provided or empty
         if (students === undefined || students.length === 0) {
             students = [];
         }
-
         if (teachers === undefined || teachers.length === 0) {
             teachers = [];
         }
 
+        // Create the user object to be saved in the database
+        databaseUser = { email, username, students, role, teachers };
 
-        // Wait for the data to be inserted
-        let user = {  email, username, students, role, teachers}
-        
-       await User.create(user);
-        
-       //const newUser = await (new User(user)).save().then(doc => User.findById(doc._id));
+        // Insert the new user into the database
+        await User.create(databaseUser);
 
-       return NextResponse.json(user);
-        
+        // Return a response indicating that a new user was created
+        return NextResponse.json({ newUser: true });
 
     } catch (err) {
+        // Handle any errors that occur during the process
         return NextResponse.json("error", err.message);
-    } finally {
-        try {
-            // Disconnect from MongoDB after operations are done
-            await mongoose.disconnect();
-        } catch (disconnectErr) {
-            console.error("Failed to disconnect from MongoDB:", disconnectErr.message);
-        }
     }
 }
 
+// Handle PUT requests to update user data
+export async function PUT(request: Request) {
+    try {
+        // Connect to MongoDB
+        await mongoose.connect(uri);
 
+        // Extract the user's ID and new role from the request body
+        const { username, role } = await request.json();
 
+        // Update the user's role in the database
+        const updatedUser = await User.findOneAndUpdate(
+            { username: username },  // Use the user's ID to find the correct record
+            { role: role },  // Update the role field with the new value
+            { new: true }  // Return the updated user instead of the original
+        );
 
+        // If the user was not found, return a 404 error
+        if (!updatedUser) {
+            return NextResponse.json({ message: "User not found" }, { status: 404 });
+        }
+
+        // Return the updated user data
+        return NextResponse.json(updatedUser);
+
+    } catch (err) {
+        // Handle any errors that occur during the update process
+        console.log(err);
+        return NextResponse.json({ message: "Error updating user" }, { status: 500 });
+    }
+}
