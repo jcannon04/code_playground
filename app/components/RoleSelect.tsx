@@ -12,7 +12,7 @@ function RoleSelect(props: { setOpenModal: any; openModal?: any; }) {
 
 
     async function selectingRole() {
-        let username;
+        let username: string;
         if (isLoaded) {
             username = user.username;
         }

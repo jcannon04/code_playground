@@ -10,28 +10,28 @@ const DashBoard = () => {
     //const { isSignedIn, user, isLoaded } = useUser();
     const { isSignedIn, user, isLoaded } = useUser();
     const [openModal, setOpenModal] = useState<string | undefined>();
-  
+
 
     async function PostUser() {
         if (isLoaded) {
             const response = await axios.post('http://localhost:3000/api/User', { username: user.username, email: user.emailAddresses[0].emailAddress });
             if (response.data.newUser === true) {
                 setOpenModal("dismissible");
-           }
+            }
             console.log(response.data);
-             console.log(user.username)
-         }
- 
+            console.log(user.username)
+        }
+
     }
     useEffect(() => {
         PostUser();
-       
+
     }, [user]);
 
     return (
         <>
             <div className='flex justify-center items-center h-96'>
-            {/* <Button onClick={() => setOpenModal('dismissible')}>Toggle modal</Button> */}
+                {/* <Button onClick={() => setOpenModal('dismissible')}>Toggle modal</Button> */}
                 <div className='text-center'>
 
                     <Link href="/create/project">
@@ -45,8 +45,8 @@ const DashBoard = () => {
                         </button>
                     </Link>
                     <RoleSelect
-                        openModal={openModal }
-                        setOpenModal={ setOpenModal} />
+                        openModal={openModal}
+                        setOpenModal={setOpenModal} />
                 </div>
             </div>
         </>
