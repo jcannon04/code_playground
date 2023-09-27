@@ -5,10 +5,10 @@ const Header = async ({}) => {
   const { userId } = auth();
 
   return (
-    <nav className="flex items-center justify-between px-6 py-4 mb-5 bg-gray-900">
+    <nav className=" z-10 relative flex items-center justify-between px-6 py-4 mb-5 bg-black-900" >
       <div className="flex items-center">
         <Link href="/">
-          <div className="text-lg font-bold text-white">BitBox</div>
+          <div className="underline decoration-sky-500 text-lg font-bold text-white">BitBox</div>
         </Link>
       </div>
       <div className="flex items-center text-white">
