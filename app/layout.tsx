@@ -10,7 +10,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang='en'>
+          <html lang='en'>
+          {/* <script src="https://js.pusher.com/8.0.1/pusher.min.js"></script> */}
+
         <body className='bg-gray-100'>
           <Header />
           {children}

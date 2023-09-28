@@ -1,6 +1,5 @@
 // Import the mongoose library to be used for database modeling
 import mongoose from "mongoose";
-
 // Define a schema for a User
 const userSchema = new mongoose.Schema({
     // Define a field 'username' of type String which is required and unique for each user
@@ -20,7 +19,7 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: ['Student', 'Teacher', 'Regular User'],
-        default: 'student'
+        default: 'Student'
     },
     // For students, a list of teachers they are associated with. This list will store ObjectIds of the User model
     teachers: [{
@@ -32,6 +31,16 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     }],
+    // For teachers, a list of classes they teach
+    classesTeaching: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Class',
+    }],
+    // For students, a list of classes they are enrolled in
+    classesEnrolled: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Class',
+    }],
     // Define a field 'createdAt' of type Date which will have a default value of the current date and time
     createdAt: {
         type: Date,
@@ -41,7 +50,8 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Project'
     }]
-    
+   
+
 });
 
 // Export the User model. If the User model already exists, then use that, otherwise create a new model using the userSchema
