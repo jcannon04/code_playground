@@ -1,4 +1,5 @@
 "use client"
+import ParticlesContainer from "./ParticlesContainer"
 import Link from "next/link";
 import PusherServer from "pusher-js"
 import { pusherClient } from '@/lib/pusher';
