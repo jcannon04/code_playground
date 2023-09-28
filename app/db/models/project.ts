@@ -33,6 +33,9 @@ const projectSchema = new mongoose.Schema({
     // Define a field 'owner' of type String to identify the project owner of the project
     owner: {
         type: String
+    },
+    assignedBy: {
+        type: String
     }
     
 });

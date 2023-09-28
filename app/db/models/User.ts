@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     // Define a field 'role' of type String which can only take one of the values 'student' or 'teacher'
     role: {
         type: String,
-        enum: ['student', 'teacher', 'regularUser'],
+        enum: ['Student', 'Teacher', 'Regular User'],
         default: 'student'
     },
     // For students, a list of teachers they are associated with. This list will store ObjectIds of the User model

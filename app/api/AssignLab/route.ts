@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         }
 
         // Check if this teacher is already associated with the student
-        const teacherExists = student.teachers.some(teacher => teacher.email === teacherEmail);
+        const teacherExists = student.teachers.some((teacher: { email: any; }) => teacher.email === teacherEmail);
         if (!teacherExists) {
             return NextResponse.json({ error: 'Teacher is not associated with this student' }, { status: 403 });
         }
