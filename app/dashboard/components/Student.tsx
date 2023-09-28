@@ -1,39 +1,74 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import RoleSelect from "../components/RoleSelect";
+import RoleSelect from "../../components/RoleSelect";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
-import { Button } from "flowbite-react";
-import TeacherDashBoard from "./components/Teacher";
-import StudentDashBoard from "./components/Student";
-const DashBoard = () => {
+import { Sidebar } from 'flowbite-react';
+import { HiChartPie, HiInbox, HiUser, HiViewBoards } from 'react-icons/hi';
+
+const StudentDashBoard = () => {
     //const { isSignedIn, user, isLoaded } = useUser();
     const { isSignedIn, user, isLoaded } = useUser();
     const [openModal, setOpenModal] = useState<string | undefined>();
-
+  
 
     async function PostUser() {
         if (isLoaded) {
             const response = await axios.post('http://localhost:3000/api/User', { username: user.username, email: user.emailAddresses[0].emailAddress });
             if (response.data.newUser === true) {
                 setOpenModal("dismissible");
-            }
+           }
             console.log(response.data);
-            console.log(user.username)
-        }
+             console.log(user.username)
+         }
+ 
+    }
+
+    async function GetProjects() {
+        const response = await axios.get('http://localhost3000/api/', {});
 
     }
     useEffect(() => {
         PostUser();
-
+       
     }, [user]);
 
     return (
-<<<<<<< Updated upstream
         <>
+       
+    <Sidebar id="default-sidebar" className="fixed top-20 right-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar" >
+      <Sidebar.Items>
+        <Sidebar.ItemGroup>
+          <Sidebar.Item
+            href="#"
+            icon={HiChartPie}
+          >
+            <p>
+              Dashboard
+            </p>
+          </Sidebar.Item>
+          <Sidebar.Item
+            href="#"
+            icon={HiViewBoards}
+          >
+            <p>
+              Courses
+            </p>
+          </Sidebar.Item>
+          <Sidebar.Item
+            href="#"
+            icon={HiInbox}
+          >
+            <p>
+              Inbox
+            </p>
+          </Sidebar.Item>
+        </Sidebar.ItemGroup>
+      </Sidebar.Items>
+    </Sidebar>
             <div className='flex justify-center items-center h-96'>
-                {/* <Button onClick={() => setOpenModal('dismissible')}>Toggle modal</Button> */}
+            {/* <Button onClick={() => setOpenModal('dismissible')}>Toggle modal</Button> */}
                 <div className='text-center'>
 
                     <Link href="/create/project">
@@ -46,29 +81,15 @@ const DashBoard = () => {
                             Browse Projects
                         </button>
                     </Link>
+
+                    <div className="container "></div>
                     <RoleSelect
-                        openModal={openModal}
-                        setOpenModal={setOpenModal} />
+                        openModal={openModal }
+                        setOpenModal={ setOpenModal} />
                 </div>
             </div>
-=======
-        <>        
-        <RoleSelect
-        openModal={openModal }
-        setOpenModal={ setOpenModal} />
-       
-       if (isLoaded && user === Teacher) {
-            
-        <TeacherDashBoard/>
-        } else if (isLoaded && user === Student) {
-
-        <StudentDashBoard/>
-        }
-        
-               
->>>>>>> Stashed changes
         </>
     );
 };
 
-export default DashBoard;
+export default StudentDashBoard;
