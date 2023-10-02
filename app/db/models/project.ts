@@ -36,9 +36,23 @@ const projectSchema = new mongoose.Schema({
     },
     assignedBy: {
         type: String
-    }
+    },
+       // Define a list 'collaborators' to store ObjectIds of the User model who have access to the project
+       collaborators: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
+    // Define a field 'currentWriter' to store the ObjectId of the User model who currently has write access
+    currentWriter: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    // Optional: Timestamps for when the project was created and last updated
+},
+    { timestamps: true }
+);
     
-});
+
 
 // Export the Project model. If the Project model already exists, then use that, otherwise create a new model using the projectSchema
 export default mongoose.models.Project || mongoose.model('Project', projectSchema);
