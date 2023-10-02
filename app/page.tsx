@@ -5,13 +5,7 @@ import { pusherClient } from '@/lib/pusher';
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 const DemoPage = () => {
-    // const pusher = new Pusher({
-    //     appId: "1677536",
-    //     key: "f2e9097c92705d394593",
-    //     secret: "b18814e8f0a3a3c46b18",
-    //     cluster: "us2",
-    //     useTLS: true
-    // });
+ 
     const [incommingMessages, setIncommingMessages] = useState('');
     useEffect(() => {
         pusherClient.subscribe("my-channel");
@@ -21,9 +15,7 @@ const DemoPage = () => {
             setIncommingMessages(text);
         })
 
-        // return () => {
-        //     pusherClient.unsubscribe("my-channel");
-        // }
+      
     }, [])
 
     const sendMessage = async (message: string) => {
