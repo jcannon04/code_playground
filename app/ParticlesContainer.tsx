@@ -34,3 +34,4 @@ class ParticlesContainer extends Component<IProps> {
 }
 
 export default ParticlesContainer;
+

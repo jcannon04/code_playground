@@ -76,7 +76,6 @@ export async function POST(request: Request) {
         await student.save();
 
 
-
         // Fetch the updated teacher's details
         let updatedTeacher = await User.findOne({ _id: teacherId });
 
