@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
         // If user exists, return a response indicating that the user is not new
         if (databaseUser) {
-            return NextResponse.json({ newUser: false });
+            return NextResponse.json({ newUser: false, databaseUser });
         }
 
         // Check and initialize students and teachers arrays if they are not provided or empty
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         await User.create(databaseUser);
 
         // Return a response indicating that a new user was created
-        return NextResponse.json({ newUser: true });
+        return NextResponse.json({ newUser: true, databaseUser });
 
     } catch (err) {
         // Handle any errors that occur during the process

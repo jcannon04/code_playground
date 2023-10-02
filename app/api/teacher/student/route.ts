@@ -14,24 +14,23 @@ const uri = process.env.MONGO_URI_DOCKER || '';
  * @param {string} params.id - The ID of the teacher.
  * @returns {Promise} - A promise that resolves to the teacher's students or an error.
  */
-export async function GET(request: Request, {params}:{params:{id: string}}) {
+export async function GET(request: Request) {
     try {
         // Connect to the MongoDB database
         await mongoose.connect(uri);
 
         // Extract the teacher's ID from the parameters
-        let { id } = params;
+      //  let { id } = params;
 
         // Find the teacher by their ID
-        let teacher = await User.findById({ id });
+        let students = await User.find();
 
-        // Check if the user is a teacher
-        if (teacher.role !== 'Teacher') {
-            return Promise.reject(new Error("User is not a teacher."));
-        }
+       let filteredStudents = students.filter((student)=> student.role == "Student")
 
         // Return the list of students associated with the teacher
-        return NextResponse.json(teacher.students);
+        return NextResponse.json(filteredStudents);
+
+    
     }
     catch (err) {
         // Handle any errors that occur
@@ -51,11 +50,11 @@ export async function POST(request: Request) {
         await mongoose.connect(uri);
 
         // Extract the teacher's email, student's email, and project ID from the request body
-        const { teacherEmail, studentEmail, projectId } = await request.json();
+        const { teacherId, studentId } = await request.json();
 
         // Find the teacher and student by their email addresses
-        let teacher = await User.findOne({ email: teacherEmail });
-        let student = await User.findOne({ email: studentEmail });
+        let teacher = await User.findOne({ _id: teacherId });
+        let student = await User.findOne({ _id: studentId });
 
         // Check if both the teacher and student exist in the database
         if (!teacher || !student) {
@@ -76,22 +75,14 @@ export async function POST(request: Request) {
         await teacher.save();
         await student.save();
 
-        
+
         // Find the project by its ID
         let project = await Projects.findOne({ _id: projectId });
 
-        // Create a new project for the student based on the provided project details
-        await Projects.create({
-            title: project.title,
-            files: project.files,
-            lab: project.lab,
-            languageId: project.languageId,
-            owner: student._id,  // Set the student as the owner of the project
-            assignedBy: teacher.email // Record the teacher's email as the one who assigned the project
-        });
+
 
         // Fetch the updated teacher's details
-        let updatedTeacher = await User.findOne({ email: teacherEmail });
+        let updatedTeacher = await User.findOne({ _id: teacherId });
 
         // Return the updated teacher's details
         return NextResponse.json(updatedTeacher);

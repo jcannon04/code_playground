@@ -3,6 +3,7 @@ import User from "@/app/db/models/User";
 import mongoose from "mongoose";
 const uri = process.env.MONGO_URI_DOCKER || '';
 
+
 mongoose.connect(uri);
 
 
@@ -40,4 +41,5 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
         console.error(error); // Log the error for debugging
         return NextResponse.error(); // Return a generic error response
     }
+
 }
