@@ -4,11 +4,10 @@ import Link from "next/link";
 import RoleSelect from "../../components/RoleSelect";
 import axios from "axios";
 import { useUser } from "@clerk/nextjs";
-import { Button } from "flowbite-react";
 import { Sidebar } from 'flowbite-react';
 import { HiArrowSmRight, HiChartPie, HiInbox, HiShoppingBag, HiTable, HiUser, HiViewBoards } from 'react-icons/hi';
 
-const TeacherDashBoard = () => {
+const TeacherDashBoard = ({dbUser, setDbUser}) => {
     //const { isSignedIn, user, isLoaded } = useUser();
     const { isSignedIn, user, isLoaded } = useUser();
     const [openModal, setOpenModal] = useState<string | undefined>();
@@ -16,7 +15,7 @@ const TeacherDashBoard = () => {
 
     async function PostUser() {
         if (isLoaded) {
-            const response = await axios.post('http://localhost:3000/api/User', { username: user.username, email: user.emailAddresses[0].emailAddress });
+            const response = await axios.post('/api/User', { username: user.username, email: user.emailAddresses[0].emailAddress });
             if (response.data.newUser === true) {
                 setOpenModal("dismissible");
            }
@@ -25,11 +24,27 @@ const TeacherDashBoard = () => {
          }
  
     }
+   
 
-    async function GetStudents() {
-        const response = await axios.get('http://localhost3000/api/', {});
+    async function GetStudents() {       
+        let studentsArray = [];
+        for(let i = 0; i > dbUser.students.length; i ++ ){     
+            let studentId = dbUser.students[i];
+            const response = await axios.get(`/api/User/${studentId}`);
+             studentsArray.push(response.data);
+        }
 
+        console.log(studentsArray)
+        return studentsArray;
     }
+    GetStudents();
+
+    async function AddStudents(id){
+    const response = await axios.post(`/api/teacher/student`,{teacherId: dbUser._id, studentId: id})
+        setDbUser(response.data);
+    }
+
+
     useEffect(() => {
         PostUser();
        
@@ -70,6 +85,7 @@ const TeacherDashBoard = () => {
             icon={HiUser}
           >
             <p>
+            
               Students
             </p>
           </Sidebar.Item>

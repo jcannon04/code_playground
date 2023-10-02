@@ -5,22 +5,19 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     // Define a field 'username' of type String which is required and unique for each user
     username: {
-        type: String,
-        required: true,
-        unique: true,
+        type: String
+        
     },
     // Define a field 'email' of type String which is required and unique for each user
     email: {
-        type: String,
-        required: true,
-        unique: true,
+        type: String
     },
 
     // Define a field 'role' of type String which can only take one of the values 'student' or 'teacher'
     role: {
         type: String,
         enum: ['Student', 'Teacher', 'Regular User'],
-        default: 'student'
+        default: 'Student'
     },
     // For students, a list of teachers they are associated with. This list will store ObjectIds of the User model
     teachers: [{

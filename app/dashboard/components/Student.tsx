@@ -7,7 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import { Sidebar } from 'flowbite-react';
 import { HiChartPie, HiInbox, HiUser, HiViewBoards } from 'react-icons/hi';
 
-const StudentDashBoard = () => {
+const StudentDashBoard = ({dbUser}) => {
     //const { isSignedIn, user, isLoaded } = useUser();
     const { isSignedIn, user, isLoaded } = useUser();
     const [openModal, setOpenModal] = useState<string | undefined>();
@@ -25,10 +25,10 @@ const StudentDashBoard = () => {
  
     }
 
-    async function GetProjects() {
-        const response = await axios.get('http://localhost3000/api/', {});
+    //async function GetProjects() {
+       // const response = await axios.get('http://localhost3000/api/', {});
 
-    }
+    //}
     useEffect(() => {
         PostUser();
        
