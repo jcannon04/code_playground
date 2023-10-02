@@ -76,6 +76,7 @@ export async function POST(request: Request) {
         await teacher.save();
         await student.save();
 
+        
         // Find the project by its ID
         let project = await Projects.findOne({ _id: projectId });
 
