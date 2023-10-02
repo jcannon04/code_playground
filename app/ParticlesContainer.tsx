@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Particles from "react-particles";
+import Particles from "react-tsparticles";
 import type { Engine } from "tsparticles-engine";
 import { loadFirePreset } from "tsparticles-preset-fire";
 
