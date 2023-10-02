@@ -5,10 +5,10 @@ const Header = async ({}) => {
   const { userId } = auth();
 
   return (
-    <nav className='flex items-center justify-between px-6 py-4 mb-5 bg-black'>
+    <nav className=" z-10 relative flex items-center justify-between px-6 py-4 mb-5 bg-black-900" >
       <div className='flex items-center'>
         <Link href='/'>
-          <div className='text-lg font-bold text-white'>CodeCrewLabs</div>
+        <div className="underline decoration-sky-500 text-lg font-bold text-white">BitBox</div>
         </Link>
       </div>
       <div className='flex items-center text-white'>
@@ -16,7 +16,7 @@ const Header = async ({}) => {
           <>
             <Link
               href='/sign-in'
-              className='text-gray-300 hover:text-white mr-4'
+              className="border border-white text-white hover:text-gray-300 mr-2 px-4 py-2 rounded "
             >
               Sign In
             </Link>
