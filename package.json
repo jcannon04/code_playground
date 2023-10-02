@@ -35,13 +35,7 @@
     "react-icons": "^4.10.1",
     "react-markdown": "^8.0.7",
     "react-monaco-editor": "^0.53.0",
-
-    "react-particles": "^2.12.2",
-    "react-tsparticles": "^2.12.2",
-    "tsparticles-engine": "^2.12.0",
-    "tsparticles-preset-fire": "^2.12.0",
-    "tsparticles-slim": "^2.12.0"
-
+    "svix": "^1.12.0"
   },
   "devDependencies": {
     "@types/node": "20.5.0",
