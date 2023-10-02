@@ -10,10 +10,15 @@ const uri = process.env.MONGO_URI_DOCKER || '';
 // Establish an initial connection to MongoDB
 mongoose.connect(uri);
 
-// Handle GET requests
+//GET request to get all Users
 export async function GET(request: Request) {
-    // Return a success response
-    return NextResponse.json("success");
+    try {
+        await mongoose.connect(uri);
+        let allUsers = await User.find({});
+        return NextResponse.json(allUsers);
+    } catch (err) { 
+        return NextResponse.json(err);
+    }
 }
 
 // Handle POST requests
