@@ -13,7 +13,11 @@ mongoose.connect(uri);
 // Handle GET requests
 export async function GET(request: Request) {
     // Return a success response
-    return NextResponse.json("success");
+    mongoose.connect(uri);
+
+    const allUsers = await User.find({});
+
+    return NextResponse.json(allUsers);
 }
 
 // Handle POST requests

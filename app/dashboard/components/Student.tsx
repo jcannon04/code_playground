@@ -11,7 +11,7 @@ const StudentDashBoard = ({dbUser}) => {
     //const { isSignedIn, user, isLoaded } = useUser();
     const { isSignedIn, user, isLoaded } = useUser();
     const [openModal, setOpenModal] = useState<string | undefined>();
-  
+   
 
     async function PostUser() {
         if (isLoaded) {
