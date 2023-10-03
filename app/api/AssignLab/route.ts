@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
 import Student from "../../db/models/User";
 import mongoose from "mongoose";
+import Project from "@/app/db/models/project";
 const uri = process.env.MONGO_URI_DOCKER || '';
 
 export async function POST(request: Request) {
     try {
         await mongoose.connect(uri);
 
-        const { studentEmail, teacherEmail, title, files, lab, languageId } = await request.json();
+        const { studentEmail, teacherEmail, projectId } = await request.json();
         
         // Find the student by email
         const student = await Student.findOne({ email: studentEmail });
-
+        const project = await Project.findOne({_id: projectId})
         if (!student) {
             return NextResponse.json({ error: 'Student not found' }, { status: 404 });
         }
@@ -23,10 +24,10 @@ export async function POST(request: Request) {
         }
 
         // Add the new project to the student's projects array
-        student.projects.push({ title, files, lab, languageId });
-        await student.save();
+        const newProject = await Project.create({title: project.title, lab: project.lab, files: project.files, languageId: project.languageId, owner: studentEmail, assignedBy: teacherEmail})
+       
 
-        return NextResponse.json(student);
+        return NextResponse.json(newProject);
 
     } catch (error: any) {
         console.log(error.message);

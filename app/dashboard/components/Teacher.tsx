@@ -39,7 +39,7 @@ const TeacherDashBoard = ({dbUser, setDbUser}) => {
     }
     GetStudents();
 
-    async function AddStudents(id){
+    async function AssignProjects(id){
     const response = await axios.post(`/api/teacher/student`,{teacherId: dbUser._id, studentId: id})
         setDbUser(response.data);
     }
