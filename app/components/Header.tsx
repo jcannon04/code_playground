@@ -5,7 +5,7 @@ const Header = async ({}) => {
   const { userId } = auth();
 
   return (
-    <nav className=" z-10 relative flex items-center justify-between px-6 py-4 mb-5 bg-black-900" >
+    <nav className=" z-10 relative flex items-center justify-between px-6 py-4 mb-5 " >
       <div className="flex items-center">
         <Link href="/">
           <div className="underline decoration-sky-500 text-lg font-bold text-white">BitBox</div>
@@ -16,7 +16,7 @@ const Header = async ({}) => {
           <>
             <Link
               href="/sign-in"
-              className="border border-white text-white hover:text-gray-300 mr-2 px-4 py-2 rounded "
+              className=" border border-white text-white hover:text-gray-300 mr-2 px-4 py-2 rounded "
             >
               Sign In
             </Link>
@@ -32,13 +32,13 @@ const Header = async ({}) => {
           <div>
             <Link
               href="/dashboard"
-              className="text-gray-300 hover:text-white mr-4"
+              className="text-sky-500 hover:text-white mr-4"
             >
               Dashboard
             </Link>
             <Link
               href="/profile"
-              className="text-gray-300 hover:text-white mr-4"
+              className="text-sky-500 hover:text-white mr-4"
             >
               Profile
             </Link>
