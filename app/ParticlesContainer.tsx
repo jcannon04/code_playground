@@ -1,4 +1,6 @@
+
 import React, { Component, useState } from "react";
+
 import Particles from "react-tsparticles";
 import type { Engine } from "tsparticles-engine";
 import { loadFirePreset } from "tsparticles-preset-fire";
