@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       
       <html lang='en'>
-        <body className='bg-gray-900'>
+        <body className='bg-gray-300'>
           <Header />
           {children}
         </body>
