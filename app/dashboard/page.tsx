@@ -14,7 +14,7 @@ const DashBoard = () => {
 
   async function PostUser() {
     if (isLoaded) {
-      const response = await axios.post("http://localhost:3000/api/User", {
+      const response = await axios.post("/api/User", {
         username: user.username,
         email: user.emailAddresses[0].emailAddress,
       });
