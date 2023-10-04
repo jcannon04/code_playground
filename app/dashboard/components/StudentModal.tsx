@@ -30,6 +30,7 @@ export default function StudentModal({ openStudentModal, setOpenStudentModal, st
                     <Table.Body className="divide-y">
                         {
                             students.map((Student) => {
+                                return(
                                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                     <Table.Cell className="p-4">
                                         <Checkbox />
@@ -44,7 +45,8 @@ export default function StudentModal({ openStudentModal, setOpenStudentModal, st
                                     <Table.Cell>
                                         {Student.projects.length}
                                     </Table.Cell>
-                                </Table.Row>
+                                    </Table.Row>
+                                )
                             })
                         }
                     </Table.Body>
