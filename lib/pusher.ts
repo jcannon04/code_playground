@@ -2,10 +2,10 @@ import PusherServer from 'pusher'
 import PusherClient from 'pusher-js'
 
 export const pusherServer = new PusherServer({
-  appId: process.env.PUSHER_APP_ID!,
-  key: process.env.NEXT_PUBLIC_PUSHER_APP_KEY!,
-  secret: process.env.PUSHER_APP_SECRET!,
-  cluster: 'us2',
+  appId: process.env.NEXT_PUBLIC_app_id!,
+  key: process.env.NEXT_PUBLIC_key!,
+  secret: process.env.NEXT_PUBLIC_secret!,
+  cluster: process.env.NEXT_PUBLIC_cluster,
   useTLS: true,
 })
 
@@ -16,13 +16,13 @@ export const pusherServer = new PusherServer({
  * @see https://dashboard.pusher.com/apps/<YOUR_APP_ID>/keys
  */
 
-export const pusherClient = new PusherClient(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
-  cluster: 'us2',
-  authEndpoint: '/api/pusher-auth',
-  authTransport: 'ajax',
-  auth: {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  },
+export const pusherClient = new PusherClient(process.env.NEXT_PUBLIC_app_id!, {
+  cluster: process.env.NEXT_PUBLIC_cluster,
+  // authEndpoint: '/api/pusher-auth',
+  // authTransport: 'ajax',
+  // auth: {
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // },
 })
