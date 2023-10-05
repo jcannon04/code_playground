@@ -12,6 +12,7 @@ const ProjectsPage: React.FC = () => {
   const [openStudentModal, setOpenStudentModal] = useState("");
   const [students, setStudents] = useState([]);
   const [currentRole, setCurrentRole] = useState("");
+  const [currentProject, setCurrentProject] = useState("");
   
  
 
@@ -27,6 +28,7 @@ const ProjectsPage: React.FC = () => {
     
     if (isLoaded) {
       fetchProjects();
+      console.log("projects", projects)
       PostUser();
     }
   }, [user]);
@@ -47,8 +49,9 @@ const ProjectsPage: React.FC = () => {
 
     await fetchProjects();
   };
-  const handleManageClick = async () => {
+  const handleManageClick = async (Id) => {
     //Manage Modal
+    setCurrentProject(Id);
     const response = await axios.get(`/api/User`);
 
     let allStudents = await response.data.filter((user: { role: string; }) => user.role == "Student");
@@ -75,7 +78,7 @@ const ProjectsPage: React.FC = () => {
             height="1em" 
             viewBox="0 0 448 512"
             className="w-6 h-6 text-black-100 ml-auto cursor-pointer mb-3"
-            onClick={(e) => handleManageClick()}
+            onClick={(e) => handleManageClick(project._id)}
             >
       <path 
       d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/>
@@ -117,6 +120,8 @@ const ProjectsPage: React.FC = () => {
             openStudentModal={openModal}
             setOpenStudentModal={setOpenModal}
             students={students}
+            teacherEmail={user.emailAddresses[0].emailAddress}
+            currentProject = {currentProject}
           />
         </li>
       </ul>

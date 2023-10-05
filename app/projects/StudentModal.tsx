@@ -1,13 +1,16 @@
 'use client';
 import { Checkbox, Table, Modal, Button } from 'flowbite-react';
 import { useState } from 'react';
+import axios from "axios";
 
 
-export default function StudentModal({ openStudentModal, setOpenStudentModal, students }) {
+export default function StudentModal({ openStudentModal, setOpenStudentModal, students, teacherEmail, currentProject}) {
 
-    const props = { openStudentModal, setOpenStudentModal,students };
-
-    
+    const props = { openStudentModal, setOpenStudentModal,students, teacherEmail, currentProject};
+    //studentEmail, teacherEmail, projectId 
+    const handleStudentSelect = async (studentEmail, teacherEmail, Id) => {
+        const response = await axios.post("./api/AssignLab", { studentEmail: studentEmail, teacherEmail: teacherEmail, projectId: Id });
+      };
     return (
         <Modal dismissible show={props.openStudentModal === 'dismissible'} onClose={() => props.setOpenStudentModal(undefined)}>
             <Modal.Header>Students</Modal.Header>
@@ -33,7 +36,9 @@ export default function StudentModal({ openStudentModal, setOpenStudentModal, st
                                 return(
                                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                     <Table.Cell className="p-4">
-                                        <Checkbox />
+                                        <Checkbox 
+                                        onClick={(e) => handleStudentSelect(Student.email, teacherEmail, currentProject)}
+                                        />
                                     </Table.Cell>
                                     <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                         {Student.username}
