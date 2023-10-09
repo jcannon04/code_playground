@@ -120,7 +120,7 @@ const ProjectsPage: React.FC = () => {
             openStudentModal={openModal}
             setOpenStudentModal={setOpenModal}
             students={students}
-            teacherEmail={user.emailAddresses[0].emailAddress}
+            teacherUsername={user?.username}
             currentProject = {currentProject}
           />
         </li>
