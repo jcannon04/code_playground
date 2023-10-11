@@ -6,11 +6,17 @@ import { useUser } from "@clerk/nextjs";
 import { pusherClient } from "@/lib/pusher";
 import TeacherDashBoard from "./components/Teacher";
 import StudentDashBoard from "./components/Student";
+import SocketConnect from "../components/SocketConnect";
+import { Socket } from "dgram";
+
 const DashBoard = () => {
   //const { isSignedIn, user, isLoaded } = useUser();
   const { isSignedIn, user, isLoaded } = useUser();
   const [openModal, setOpenModal] = useState<string | undefined>();
+  const [openSocketModal, setOpenSocketModal] = useState<string | undefined>();
+  const [answer, setAnswer] = useState<string | undefined>();
   const [dbUser, setDbUser] = useState(null);
+  const [projectId, setProjectId] = useState("");
 
   async function PostUser() {
     if (isLoaded) {
@@ -21,10 +27,11 @@ const DashBoard = () => {
       if (response.data.newUser === true) {
         setOpenModal("dismissible");
       }
-      var presenceChannel = pusherClient.subscribe('presence-members-online')
       pusherClient.subscribe(`request-channel-${user.username}`);
-      pusherClient.bind('online', (message: string)=> {
-        console.log(presenceChannel);
+      pusherClient.bind("project-request", (id : string) => {
+        console.log(user.username);
+        setOpenSocketModal("dismissible");
+        setProjectId(id);
       })
       setDbUser(response.data.databaseUser);
     }
@@ -36,6 +43,7 @@ const DashBoard = () => {
   return (
     <>
       <RoleSelect openModal={openModal} setOpenModal={setOpenModal} />
+      <SocketConnect openModal={openSocketModal} setOpenModal={setOpenSocketModal} answer={answer} setAnswer={setAnswer} project={projectId} />
 
       {dbUser?.role === "Teacher" && (
         <TeacherDashBoard dbUser={dbUser} setDbUser={setDbUser} />
