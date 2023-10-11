@@ -36,6 +36,10 @@ const projectSchema = new mongoose.Schema({
     },
     assignedBy: {
         type: String
+    },
+    // Define a field 'description' of type String to identify the project description of the project
+    description:{
+        type: String
     }
     
 });

@@ -7,6 +7,7 @@ const LanguageSelect = ({ languages }) => {
     const router = useRouter();
     const { user, isLoaded } = useUser();
     const [title, setTitle] = useState<string>("")
+    const [description, setDescription] = useState<string>("")
     const [languageId, setLanguageId] = useState<Number>(10);
     const [files, setFiles] = useState<Files>(starterFiles.filter(file => file.languageId == languageId));
     const [lab, setLab] = useState<string>();
@@ -29,7 +30,8 @@ const LanguageSelect = ({ languages }) => {
                     files,
                     lab,
                     languageId,
-                    owner
+                    owner,
+                    description,
 
                 })
             })
@@ -45,7 +47,9 @@ const LanguageSelect = ({ languages }) => {
     const handleTitleChange = (newTitle: string) => {
         setTitle(newTitle);
     }
-
+    const handleDescriptionChange = (newDescription: string) => {
+        setDescription(newDescription);
+    }
     const handleLanguageSelect = (newLanguageId: string) => {
         const newLanguageNumber = parseInt(newLanguageId);
         setLanguageId(newLanguageNumber);
@@ -69,6 +73,20 @@ const LanguageSelect = ({ languages }) => {
                     onChange={(e) => handleTitleChange(e.target.value)}
                     className='block border border-gray-300 rounded px-3 py-2 w-full'
                     value={title}
+                />
+                <label
+                    htmlFor='projectDescription'
+                    className='block mb-2 font-semibold'
+                >
+                    Description
+                </label>
+                <textarea
+                    
+                    name='projectDescription'
+                    id='projectDescription'
+                    onChange={(e) => handleDescriptionChange(e.target.value)}
+                    className='block border border-gray-300 rounded px-3 py-2 w-full'
+                    value={description}
                 />
             </div>
             <div>
