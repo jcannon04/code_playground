@@ -19,8 +19,8 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        const { title, files, lab, languageId , owner} = await request.json();
-        let project = await Project.create({ title, files, lab, languageId, owner });
+        const { title, files, lab, languageId , owner, description } = await request.json();
+        let project = await Project.create({ title, files, lab, languageId, owner, description });
         return NextResponse.json(project);
     } catch (error: any) {
         console.log(error.message);

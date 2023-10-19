@@ -1,6 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Gabarito&display=swap');
+
 
 /* Custom glow animation class */
 @keyframes glow {
@@ -61,4 +64,8 @@
     100% {
       opacity: 0.8;
     }
+  }
+
+  .testfont {
+    font-family: 'Gabarito', sans-serif;
   }
